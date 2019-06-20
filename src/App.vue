@@ -1,31 +1,108 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div id="app" class="container">
+
+    <div class="header">
+      <main-header></main-header>
     </div>
-    <router-view/>
+
+    <div class="views-section">
+        <router-view></router-view>
+    </div>
+
+    <div class="footer">
+      <a href="" class="home">FML</a>
+    </div>
+
   </div>
 </template>
 
+<script>
+import MainHeader from './components/layout/MainHeader.vue'
+
+export default {
+  name: 'App',
+
+  components:{
+    MainHeader
+  },
+
+  methods:{
+    redirectHome(){
+      this.$router.history.push({name:"tracks"})
+    },
+  },
+}
+</script>
+
+
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
+
+body{
+  margin: 0;
+  background-color: white;
+  font-family: helvetica;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+div.container{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 2fr 49fr 2fr;
+  grid-template-areas: "header"
+                       "views-section"
+                       "footer";
+  grid-gap: 100px;
+  min-height: 3000px;
+  max-height: 3000px;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+div.header{
+  display: grid;
+  z-index: 1000;
+  width: 100%;
+  position: fixed;
+  grid-area: header;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(2, 1fr);
+  min-height: 20%;
+  max-height: 20%;
+}
+/*end of player related layout*/
+
+/*each view will manipulate the views-section at its will*/
+div.views-section{
+  display: grid;
+  grid-area: views-section;
+  border: teal solid;
+  background-color: snow;
+}
+
+div.footer{
+  display: grid;
+  grid-area: footer;
+  justify-items: center;
+  align-items: center;
+  border:red solid;
+}
+
+.slide-enter-active {
+transition: all .8s ease;
+}
+
+.slide-leave-active {
+transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+
+.slide-enter, .slide-leave-to{
+transform: translateX(10px);
+opacity: 0;
+}
+
+@media screen and (max-width: 769px){
+
+  div.container{
+    grid-template-rows: 2fr 49fr 2fr;
+    min-height: 3000px;
+    max-height: 3000px;
+  }
 }
 </style>
