@@ -81,6 +81,7 @@ export default {
         },
 
         onReszie(){
+            //check if app should show mobile layout
             this.isMobile = window.screen.width <= 769
         }
     },
