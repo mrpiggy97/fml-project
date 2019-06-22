@@ -61,7 +61,7 @@ export default {
             let numberOfTracks = null;
 
             if(this.backendError === true){
-                numberOfTracks = "an error with the servers"
+                numberOfTracks = "there was an error with the servers"
             }
 
             else{
@@ -74,14 +74,13 @@ export default {
                     numberOfTracks = `we found ${this.tracks.length} tracks`
                 }
 
-                else if(this.firstLoadCompleted && this.tracksLoading === null){
+                else if(this.firstLoadCompleted === true && this.tracksLoading === null){
                     //firstLoadCompleted will only be true once the initial
                     //api call is finished and it is successful otherwise it will
                     //remain as false
                     numberOfTracks = "0 searches, take a look at queen"
                 }
             }
-
             return numberOfTracks
         }
     },
@@ -134,6 +133,7 @@ export default {
     },
 
     created(){
+        console.log("it has been created")
         //show the loader at the very beggining
         let query = 'queen'
 
@@ -151,6 +151,8 @@ export default {
             this.showTrack = true
             this.showLoader = false
         }, 1500)
+
+        console.log("it has finished creating")
     },
 
     mounted(){
@@ -205,8 +207,6 @@ div.tracks{
     justify-content: space-around;
     align-content: stretch;
     background-color: white;
-    min-height: 100%;
-    max-height: 100%;
 }
 
 i.search-icon{
