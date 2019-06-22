@@ -1,6 +1,7 @@
 <template>
     <div class="player-component" :style="{backgroundImage: image_url}">
-        <audio :src="song_preview" @timeupdate="logTime" ref="player"></audio>
+        <audio :src="song_preview" ref="player" @timeupdate="logTime" :volume="volume_converter">
+        </audio>
 
         <i class="fa fa-play-circle-o player" @click="play" v-if="paused"></i>
         <i class="fa fa-pause-circle-o player" @click="pause" v-else></i>
@@ -22,20 +23,9 @@ export default {
     data(){
         return{
             timer: 0,
-            volume: 50,
-            volume_converter: null,
-            paused: true
+            volume: 25,
+            paused: true,
         }
-    },
-
-    watch:{
-        volume(oldVal, newVal){
-            this.volume_converter = newVal / 100
-        },
-
-        volume_converter(oldVal, newVal){
-            this.$refs.player.volume = newVal
-        },
     },
 
     computed:{
@@ -55,7 +45,7 @@ export default {
 
             let url = null
 
-            if(this.info.album.images[0].url){
+            if(this.info.album){
                 url = `url(${this.info.album.images[0].url})`
             }
 
@@ -72,6 +62,11 @@ export default {
 
             return name
         },
+
+        volume_converter(){
+            //transform volume so it can be compatible with the audio tag
+            return this.volume/100
+        }
     },
 
     methods:{
@@ -109,14 +104,10 @@ export default {
             this.$refs.player.currentTime = this.timer
         },
     },
-
-    mounted(){
-        this.$refs.player.volume = this.volume / 100
-    },
 }
 </script>
 
-<style>
+<style scoped>
 
 div.player-component{
     display: grid;
