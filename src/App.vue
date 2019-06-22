@@ -46,13 +46,13 @@ body{
 div.container{
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 2fr 49fr 2fr;
+  grid-template-rows: 2fr 50fr 2fr;
   grid-template-areas: "header"
                        "views-section"
                        "footer";
   grid-gap: 100px;
-  min-height: 3000px;
-  max-height: 3000px;
+  min-height: 2200px;
+  max-height: 2200px;
 }
 
 div.header{
