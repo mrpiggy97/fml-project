@@ -37,12 +37,13 @@ export default {
         selected(){
 
             let value = false
-            //if track was selected it should be an Object
+
             let trackType = this.track instanceof Object
             
             if(trackType === true && this.track.id == this.id){
                 value = true
-            }
+            }                
+            //if track was selected it should be an Object
 
             return value
         },
@@ -50,8 +51,10 @@ export default {
         image_url(){
             let value = null
 
-            if(this.info.album.images[0].url){
-                value = `url(${this.info.album.images[0].url})`
+            if(this.info.album){
+                if(this.info.album.images[0]){
+                    value = `url(${this.info.album.images[0].url})`                    
+                }
             }
 
             return value
@@ -69,10 +72,6 @@ export default {
             return musicians
         },
 
-        reference_link(){
-            return this.info.uri
-        },
-
         id(){
             return this.info.id
         },
@@ -82,12 +81,7 @@ export default {
         },
 
         has_preview_url(){
-            if(this.info.preview_url){
-                return true
-            }
-            else{
-                return false
-            }
+            return this.info.preview_url !== null
         },
     },
 
