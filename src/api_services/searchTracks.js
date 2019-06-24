@@ -3,17 +3,13 @@ import axios from 'axios'
 import api_urls from './api_urls.js'
 
 function searchTracks(q){
-    
-    let url = api_urls.search
 
-    return axios({
-        method: 'get',
-        url: url,
-        timeout: 5000,
-        params:{
-            type: 'track',
+    return axios.get(api_urls.search,{
+        params: {
+            type: "track",
             q: q
-        }
+        },
+        timeout: 5000
     })
 }
 
