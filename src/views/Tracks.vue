@@ -117,18 +117,9 @@ export default {
         },
 
         async presentApp(){
-            let query = "queen"
 
             try{
-               let trackResponse = await axios({
-                   method: "get",
-                   url: api_urls.search,
-                   timeout: 5000,
-                   params:{
-                       type: "track",
-                       q: query
-                   }
-               })
+               let trackResponse = await searchTracks("queen")
                this.tracks = trackResponse.data.tracks.items
                this.firstLoadCompleted = true              
             }
