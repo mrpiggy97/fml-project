@@ -1,18 +1,17 @@
 import { shallowMount } from '@vue/test-utils'
 import Tracks from '@/views/Tracks.vue'
 
+jest.mock('searchTracks')
+jest.useFakeTimers()
+
 describe('Tracks.vue', () => {
 
-    it('checks if component is created as expected', () => {
-
-        expect(Tracks.data().tracks.length).toBe(0)
-        expect(Tracks.computed.message()).toBe(null)
-    })
-
-    it('checks api call', () => {
-
+    it('checks if api runs as expected', async () => {
+        
         let wrapper = shallowMount(Tracks)
 
-        expect(wrapper.find(".tracks").exists()).toBe(true)
+        await wrapper.vm.getTracks("soryy")
+
+        expect(wrapper.vm.tracks.length).toBe(1)
     })
 })
