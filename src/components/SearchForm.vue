@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import trackBus from '../event-buses/trackBus.js'
+import trackBus from '@/event-buses/trackBus.js'
 
 export default {
     name: "SearchForm",

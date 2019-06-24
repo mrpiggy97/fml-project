@@ -38,8 +38,8 @@
 
 <script>
 import { mapState } from 'vuex'
-import TrackPlayer from '../TrackPlayer.vue'
-import SearchForm from '../SearchForm.vue'
+import TrackPlayer from '@/components/TrackPlayer.vue'
+import SearchForm from '@/components/SearchForm.vue'
 
 export default {
     name: 'MainHeader',
