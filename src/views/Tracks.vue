@@ -35,7 +35,7 @@ import TrackInfo from '../components/TrackInfo.vue'
 import SearchForm from '../components/SearchForm.vue'
 
 import { setTimeout } from 'timers'
-import trackBus from '../event-buses/trackBus';
+import trackBus from '../event-buses/trackBus'
 
 export default {
     name: 'Tracks',
@@ -87,39 +87,61 @@ export default {
 
     methods:{
 
-        getTracks(query){
+        async getTracks(query){
             //message depends on whether tracksLoading is true false or null
             this.showMessage = false
             this.showLoader = true
             this.showTrack = false
             this.tracksLoading = true
 
-            //make call to api
-            searchTracks(query).then(res => {
-                //if there was an error raised prevously
-                //wipe it out
-                if(this.backendError === true){
-                    this.backendError = false
-                }
+            if(this.backendError === true){
+                this.backendError = false
+            }
 
-                //before changing all tracks there is transition that happens
-                //and it needs time to be completed as each track dissapears after
-                //.8s
-                setTimeout(() => {
-                    this.tracks = res.data.tracks.items
-                }, 1000)
 
-            }).catch(() => {
-                //if error signal that an error has occured to the user
+            try{
+                let response = await searchTracks(query)
+                this.tracks = response.data.tracks.items
+            }
+
+            catch(error){
                 this.backendError = true
-            })
+            }
 
             setTimeout(() => {
                 this.tracksLoading = false
                 this.showMessage = true
                 this.showLoader = false
                 this.showTrack = true
-            }, 4000)
+            }, 1000)
+        },
+
+        async presentApp(){
+            let query = "queen"
+
+            try{
+               let trackResponse = await axios({
+                   method: "get",
+                   url: api_urls.search,
+                   timeout: 5000,
+                   params:{
+                       type: "track",
+                       q: query
+                   }
+               })
+               this.tracks = trackResponse.data.tracks.items
+               this.firstLoadCompleted = true              
+            }
+
+            catch(error){
+                this.backendError = true
+            }
+
+            setTimeout(() => {
+                this.showMessage = true
+                this.showTrack = true
+                this.showLoader = false
+            }, 1500)
         },
 
         onResize(){
@@ -133,26 +155,7 @@ export default {
     },
 
     created(){
-        console.log("it has been created")
-        //show the loader at the very beggining
-        let query = 'queen'
-
-        searchTracks(query).then(res =>{
-
-            this.tracks = res.data.tracks.items
-            this.firstLoadCompleted = true
-
-        }).catch(() => {
-            this.backendError = true
-        })
-
-        setTimeout(() => {
-            this.showMessage = true
-            this.showTrack = true
-            this.showLoader = false
-        }, 1500)
-
-        console.log("it has finished creating")
+        this.presentApp()
     },
 
     mounted(){
