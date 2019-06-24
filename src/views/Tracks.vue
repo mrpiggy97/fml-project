@@ -29,13 +29,13 @@
 
 <script>
 
-import searchTracks from '../api_services/searchTracks.js'
+import searchTracks from '@/api_services/searchTracks.js'
 
-import TrackInfo from '../components/TrackInfo.vue'
-import SearchForm from '../components/SearchForm.vue'
+import TrackInfo from '@/components/TrackInfo.vue'
+import SearchForm from '@/components/SearchForm.vue'
 
 import { setTimeout } from 'timers'
-import trackBus from '../event-buses/trackBus'
+import trackBus from '@/event-buses/trackBus'
 
 export default {
     name: 'Tracks',
@@ -89,25 +89,29 @@ export default {
 
         async getTracks(query){
             //message depends on whether tracksLoading is true false or null
+            //we hide the message, show the loader and tell every track-info
+            //component to not show
             this.showMessage = false
             this.showLoader = true
             this.showTrack = false
             this.tracksLoading = true
 
+            //if there was a failed api call wipe it
             if(this.backendError === true){
                 this.backendError = false
             }
 
-
+            //make api call
             try{
                 let response = await searchTracks(query)
                 this.tracks = response.data.tracks.items
             }
-
+            //tell the component there was an error
             catch(error){
                 this.backendError = true
             }
-
+            //message depends on value of backendError, tracksLoading
+            //for this method
             setTimeout(() => {
                 this.tracksLoading = false
                 this.showMessage = true
@@ -115,19 +119,20 @@ export default {
                 this.showTrack = true
             }, 1000)
         },
-
+        //method will be called when component is created()
         async presentApp(){
-
+            //make api call
             try{
                let trackResponse = await searchTracks("queen")
                this.tracks = trackResponse.data.tracks.items
                this.firstLoadCompleted = true              
             }
-
+            //tell component there was an error with the servers
             catch(error){
                 this.backendError = true
             }
-
+            //show message, tracks, and hide loader that is by default
+            //already showing
             setTimeout(() => {
                 this.showMessage = true
                 this.showTrack = true
@@ -142,6 +147,8 @@ export default {
 
     components: {
         TrackInfo,
+        //search form has an event-bus that we will listen and then
+        //call getTracks with the value it returns
         SearchForm,
     },
 
