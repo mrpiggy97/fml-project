@@ -4,8 +4,10 @@ import api_urls from './api_urls.js'
 
 function searchTracks(q){
 
-    return axios.get(api_urls.search,{
-        params: {
+    return axios({
+        method: "get",
+        url: api_urls.search,
+        params:{
             type: "track",
             q: q
         },
