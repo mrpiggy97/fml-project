@@ -2,8 +2,12 @@
     <div class="header-component">
         <transition name="slide">
             <div class="slide-menu" v-show="showMenu">
-                <span class="mobile-navbar" @click="redirectHome">home</span>
-                <span class="mobile-navbar" @click="redirectAbout">about</span>
+                <div class="mobile-home">
+                    <i class="fa fa-home mobile-navbar" @click="redirectHome"></i>
+                </div>
+                <div class="mobile-about">
+                    <span @click="redirectAbout">about</span>
+                </div>
             </div>
         </transition>
 
@@ -63,13 +67,8 @@ export default {
     methods:{
         //show or close navbar if user is on mobile
         slideMenu(){
-            if(this.showMenu === true){
-                this.showMenu = false
-            }
-
-            else{
-                this.showMenu = true
-            }
+            //if else block can be replaced by this
+            this.showMenu = (this.showMenu === true) ? false : true
         },
         //redirect methods
         redirectHome(){
@@ -128,7 +127,7 @@ div.links{
     justify-items: left;
     align-items: center;
     color: teal;
-    font-size: large;
+    font-size: x-large;
 }
 
 div.search{
@@ -152,9 +151,9 @@ div.player{
 div.slide-menu{
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(2, 100px);
-    justify-content: center;
-    align-content: flex-start;
+    grid-template-rows: repeat(2, 1fr);
+    justify-content: stretch;
+    align-content: stretch;
     position: fixed;
     min-width: 20%;
     max-width: 20%;
@@ -167,12 +166,24 @@ div.slide-menu{
     font-size: x-large;
 }
 
+div.mobile-home{
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+
+div.mobile-about{
+    display: grid;
+    justify-items: center;
+    align-items: flex-start;
+}
+
 span.generic-navbar{
     cursor: pointer;
 }
 
-span.mobile-navbar{
-    margin-top: 100px;
+i.mobile-navbar{
+    font-size: xx-large;
 }
 
 span.logo{
