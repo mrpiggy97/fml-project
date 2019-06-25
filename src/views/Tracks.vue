@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 
 import searchTracks from '@/api_services/searchTracks.js'
 
@@ -87,14 +88,29 @@ export default {
 
     methods:{
 
-        async getTracks(query){
-            //message depends on whether tracksLoading is true false or null
-            //we hide the message, show the loader and tell every track-info
-            //component to not show
+        ...mapActions(['getTrack']),
+        //computed property message depends on whether tracksLoading is true false or null
+        //we hide the message, show the loader and tell every track-info
+        //component to not show tracksAreLoading and tracksAreDoneLoading mofify
+        //the presentation of the app
+
+        tracksAreLoading(){
             this.showMessage = false
             this.showLoader = true
             this.showTrack = false
             this.tracksLoading = true
+        },
+
+        tracksAreDoneLoading(){
+            this.showMessage = true
+            this.showLoader = false
+            this.showTrack = true
+            this.tracksLoading = false
+        },
+
+        async getTracks(query){
+
+            this.tracksAreLoading()
 
             //if there was a failed api call wipe it
             if(this.backendError === true){
@@ -106,19 +122,17 @@ export default {
                 let response = await searchTracks(query)
                 this.tracks = response.data.tracks.items
             }
-            //tell the component there was an error
+            //tell the component there was an error, computed property
+            //message depends on this
             catch(error){
                 this.backendError = true
             }
-            //message depends on value of backendError, tracksLoading
-            //for this method
+            //modify app presentation
             setTimeout(() => {
-                this.tracksLoading = false
-                this.showMessage = true
-                this.showLoader = false
-                this.showTrack = true
+                this.tracksAreDoneLoading()
             }, 1000)
         },
+
         //method will be called when component is created()
         async presentApp(){
             //make api call
@@ -138,6 +152,10 @@ export default {
                 this.showTrack = true
                 this.showLoader = false
             }, 1500)
+
+            setTimeout(() => {
+                this.getTrack(this.tracks[3].id)
+            }, 2000)
         },
 
         onResize(){
