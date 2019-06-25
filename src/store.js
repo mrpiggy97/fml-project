@@ -23,7 +23,7 @@ export default new Vuex.Store({
       searchTrack(payload).then(res => {
         context.commit('setTrack', res.data)
 
-      }).catch(res => {
+      }).catch(() => {
 
         context.commit('setTrack', null)
 
