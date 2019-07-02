@@ -102,8 +102,8 @@ export default {
         },
 
         tracksAreDoneLoading(){
-            this.showMessage = true
             this.showLoader = false
+            this.showMessage = true
             this.showTrack = true
             this.tracksLoading = false
         },
@@ -198,6 +198,8 @@ div.tracks-component{
     grid-gap: 30px;
     justify-content: center;
     align-content: center;
+    min-height: 100%;
+    max-height: 100%;
 }
 
 div.loader{

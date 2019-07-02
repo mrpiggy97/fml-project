@@ -51,6 +51,8 @@ div.container{
   grid-template-areas: "header"
                        "views-section"
                        "footer";
+  justify-content: stretch;
+  align-content: stretch;
   grid-gap: 100px;
   min-height: 2200px;
   max-height: 2200px;
@@ -103,9 +105,10 @@ opacity: 0;
 @media screen and (max-width: 769px){
 
   div.container{
-    grid-template-rows: 2fr 49fr 2fr;
-    min-height: 2000px;
-    max-height: 2000px;
+    grid-template-rows: 2fr 50fr 2fr;
+    grid-gap: 150px;
+    min-height: 3000px;
+    max-height: 3000px;
   }
 }
 </style>
