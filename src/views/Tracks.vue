@@ -79,7 +79,7 @@ export default {
                     //firstLoadCompleted will only be true once the initial
                     //api call is finished and it is successful otherwise it will
                     //remain as false
-                    numberOfTracks = "0 searches, take a look at queen"
+                    numberOfTracks = "0 searches, take a look at Aerosmith"
                 }
             }
             return numberOfTracks
@@ -137,7 +137,7 @@ export default {
         async presentApp(){
             //make api call
             try{
-               let trackResponse = await searchTracks("queen")
+               let trackResponse = await searchTracks("aerosmith")
                this.tracks = trackResponse.data.tracks.items
                this.firstLoadCompleted = true              
             }
@@ -153,9 +153,11 @@ export default {
                 this.showLoader = false
             }, 1500)
 
-            setTimeout(() => {
-                this.getTrack(this.tracks[3].id)
-            }, 2000)
+            if (this.tracks.length >= 3){
+                setTimeout(() => {
+                    this.getTrack(this.tracks[3].id)
+                }, 2000)                
+            }
         },
 
         onResize(){
@@ -196,8 +198,6 @@ div.tracks-component{
     grid-gap: 30px;
     justify-content: center;
     align-content: center;
-    border: transparent solid;
-    border-radius: 5px;
 }
 
 div.loader{
@@ -211,9 +211,9 @@ div.loader{
 div.message{
     display: grid;
     grid-area: message;
-    justify-content: center;
-    align-content: center;
-    border: teal solid;
+    justify-items: center;
+    align-items: center;
+    border: midnightblue solid;
     border-radius: 5px;
     background-color: teal;
 }

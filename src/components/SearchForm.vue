@@ -64,10 +64,11 @@ button.search-button{
     grid-area: search-button;
     color: white;
     background-color: teal;
-    border: transparent solid;
+    border: midnightblue solid;
     border-radius: 5px;
     border-top-left-radius: 0%;
     border-bottom-left-radius: 0%;
+    cursor: pointer;
 }
 
 @media screen and (max-width: 769px){

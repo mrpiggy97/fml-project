@@ -1,5 +1,6 @@
 <template>
     <div class="header-component">
+        <!--slider menu for mobile-->
         <transition name="slide">
             <div class="slide-menu" v-show="showMenu">
                 <div class="mobile-home">
@@ -11,20 +12,19 @@
             </div>
         </transition>
 
-        <!-- render navbar based on mobile or desktop-->
-
         <div class="navbar">
-
+            <!--if mobile render this-->
             <div class="links" v-if="isMobile">
                 <i class="fa fa-bars" @click="slideMenu"></i>
             </div>
 
+            <!--if desktop render this-->
             <div class="links" v-else>
                 <span class="logo generic-navbar" @click="redirectHome">FML</span>
-                <span class="generic-navbar" @click="redirectHome">home</span>
+                <span class="generic-navbar" @click="redirectHome">Home</span>
                 <span class="generic-navbar" @click="redirectAbout">about</span>
             </div>
-
+            <!--only render searchform in this component when on dektop-->
             <div class="search" v-if="isMobile === false">
                 <search-form></search-form>
             </div>
@@ -126,8 +126,7 @@ div.links{
     grid-template-rows: 1fr;
     justify-items: left;
     align-items: center;
-    color: teal;
-    font-size: x-large;
+    font-size: large;
 }
 
 div.search{
@@ -146,6 +145,7 @@ div.player{
     justify-self: center;
     background-color: transparent;
     border: navy solid;
+    border-radius: 5px;
 }
 
 div.slide-menu{
@@ -187,7 +187,6 @@ i.mobile-navbar{
 }
 
 span.logo{
-    color: purple;
     font-size: xx-large;
 }
 

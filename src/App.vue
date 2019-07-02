@@ -10,7 +10,8 @@
     </div>
 
     <div class="footer">
-      <a href="" class="home">FML</a>
+      <span class="home">FML</span>
+      <span class="home">all rights reserved</span>
     </div>
 
   </div>
@@ -73,6 +74,7 @@ div.views-section{
   display: grid;
   grid-area: views-section;
   border: teal solid;
+  border-radius: 5px;
   background-color: snow;
 }
 
@@ -81,7 +83,8 @@ div.footer{
   grid-area: footer;
   justify-items: center;
   align-items: center;
-  border:red solid;
+  border: teal solid;
+  border-radius: 5px;
 }
 
 .slide-enter-active {
@@ -101,8 +104,8 @@ opacity: 0;
 
   div.container{
     grid-template-rows: 2fr 49fr 2fr;
-    min-height: 3000px;
-    max-height: 3000px;
+    min-height: 2000px;
+    max-height: 2000px;
   }
 }
 </style>

@@ -2,19 +2,8 @@
   <div class="view-about">
 
     <transition name="slide">
-      <div class="about" v-show="showItems">
-
-        <div class="title-about">
-          <p>about the app</p>
-        </div>
-
-        <div class="description">
-          <p>the app consumes an api that returns a list of songs each
-            song with a 30 second preview and a list of all artists involved 
-            with it and also images ot the album        
-          </p>
-        </div>
-
+      <div class="github" v-show="showItems">
+        <a href="https://github.com/mrpiggy97/fml-project" target="blank">Github Repo</a>
       </div>
     </transition>
 
@@ -31,7 +20,25 @@
           <img src="../vuex.png" class="stack-image"/>
           <img src="../css-grid.jpg" class="stack-image"/>
           <img src="../netlify.png" class="stack-image"/>
+          <img src="../github.png" class="stack-image"/>
         </div>
+      </div>
+    </transition>
+
+    <transition name="slide">
+      <div class="about" v-show="showItems">
+
+        <div class="title-about">
+          <p>about the app</p>
+        </div>
+
+        <div class="description">
+          <p>the app consumes an api that returns a list of songs each
+            song with a 30 second preview and a list of all artists involved 
+            with it and also images ot the album        
+          </p>
+        </div>
+
       </div>
     </transition>
   </div>
@@ -64,41 +71,27 @@ div.view-about{
   grid-template-columns: 800px;
   grid-template-rows: repeat(3, 400px);
   justify-content: center;
-  align-content:initial;
-  grid-gap: 20px;
-  border: red solid;
+  align-content: center;
+  grid-gap: 200px;
   font-size: x-large;
+  font-family: sans-serif;
   color: teal;
 }
 
-/*about layout*/
-div.about{
-  border: green solid;
+/*github layouot*/
+
+div.github{
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 3fr;
-  grid-template-areas: "title-about"
-                        "description";
-  justify-content: stretch;
-  align-content: stretch;
-}
-
-div.title-about{
-  display: grid;
-  grid-area: title-about;
+  grid-template-rows: 1fr;
   justify-items: center;
   align-items: center;
+  font-size: xx-large;
+  border: purple dashed;
+  border-radius: 5px;
 }
 
-div.description{
-  display: grid;
-  justify-items: center;
-  align-items: center;
-  grid-area: description;
-  border: red solid;
-}
-
-/*end of about layout*/
+/*end of github area*/
 
 /*start of stack layout*/
 div.stack{
@@ -108,7 +101,8 @@ div.stack{
   grid-template-areas: "title-stack"
                        "stack-images";
   grid-gap: 0px;
-  border: navy solid;
+  border: navy dashed;
+  border-radius: 5px;
 }
 
 div.title-stack{
@@ -131,11 +125,40 @@ img.stack-image{
 
 /*end of stack layout*/
 
+/*about layout*/
+div.about{
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 3fr;
+  grid-template-areas: "title-about"
+                        "description";
+  justify-content: stretch;
+  align-content: stretch;
+  border: darkgreen dashed;
+  border-radius: 5px;
+}
+
+div.title-about{
+  display: grid;
+  grid-area: title-about;
+  justify-items: center;
+  align-items: center;
+}
+
+div.description{
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  grid-area: description;
+}
+
+/*end of about layout*/
+
 @media screen and (max-width: 769px){
 
   div.view-about{
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(3, 300px);
+    grid-template-rows: repeat(3, 350px);
   }
 }
 </style>
