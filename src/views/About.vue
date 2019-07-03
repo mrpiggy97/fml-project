@@ -39,6 +39,9 @@
           </p>
         </div>
 
+        <div class="screenshot">
+          <img src="../screenshot.png" class="screenshot"/>
+        </div>
       </div>
     </transition>
   </div>
@@ -69,10 +72,10 @@ export default {
 div.view-about{
   display: grid;
   grid-template-columns: 800px;
-  grid-template-rows: repeat(3, 400px);
+  grid-template-rows: repeat(2, 400px) 700px;
   justify-content: center;
   align-content: center;
-  grid-gap: 200px;
+  grid-gap: 150px;
   font-size: x-large;
   font-family: sans-serif;
   color: teal;
@@ -129,9 +132,10 @@ img.stack-image{
 div.about{
   display: grid;
   grid-template-columns: 1fr;
-  grid-template-rows: 1fr 3fr;
+  grid-template-rows: 1fr 3fr 3fr;
   grid-template-areas: "title-about"
-                        "description";
+                       "description"
+                       "screenshot";
   justify-content: stretch;
   align-content: stretch;
   border: darkgreen dashed;
@@ -150,6 +154,20 @@ div.description{
   justify-items: center;
   align-items: center;
   grid-area: description;
+}
+
+div.screenshot{
+  display: grid;
+  grid-area: screenshot;
+  justify-items: center;
+  align-items: center;
+}
+
+img.screenshot{
+  min-width: 90%;
+  max-width: 90%;
+  min-height: 90%;
+  max-height: 90%;
 }
 
 /*end of about layout*/

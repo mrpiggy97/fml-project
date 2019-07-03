@@ -22,7 +22,7 @@
             <div class="links" v-else>
                 <span class="logo generic-navbar" @click="redirectHome">FML</span>
                 <span class="generic-navbar" @click="redirectHome">Home</span>
-                <span class="generic-navbar" @click="redirectAbout">about</span>
+                <span class="generic-navbar" @click="redirectAbout">about the app</span>
             </div>
             <!--only render searchform in this component when on dektop-->
             <div class="search" v-if="isMobile === false">
