@@ -176,7 +176,7 @@ img.screenshot{
 
   div.view-about{
     grid-template-columns: 1fr;
-    grid-template-rows: repeat(3, 350px);
+    grid-template-rows: repeat(2, 600px) 1000px;
   }
 }
 </style>
