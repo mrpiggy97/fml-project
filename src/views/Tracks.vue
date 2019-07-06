@@ -11,7 +11,7 @@
         </div>
 
         <div class="searching-tracks" v-if="isMobile">
-            <search-form></search-form>
+            <search-form v-if="isMobile"></search-form>
         </div>
 
         <div class="message">
