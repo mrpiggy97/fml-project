@@ -35,7 +35,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 div.searchform-component{
     display: grid;
     grid-template-columns: 1fr;
