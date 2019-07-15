@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import trackBus from '@/event-buses/trackBus.js'
 import { mapMutations } from 'vuex'
 
 export default {

@@ -15,12 +15,12 @@
         </div>
 
         <div class="stack-images">
-          <img src="../vue.png" class="stack-image"/>
-          <img src="../axios.png" class="stack-image"/>
-          <img src="../vuex.png" class="stack-image"/>
-          <img src="../css-grid.jpg" class="stack-image"/>
-          <img src="../netlify.png" class="stack-image"/>
-          <img src="../github.png" class="stack-image"/>
+          <img src="../images/vue.png" class="stack-image"/>
+          <img src="../images/axios.png" class="stack-image"/>
+          <img src="../images/vuex.png" class="stack-image"/>
+          <img src="../images/css-grid.jpg" class="stack-image"/>
+          <img src="../images/netlify.png" class="stack-image"/>
+          <img src="../images/github.png" class="stack-image"/>
         </div>
       </div>
     </transition>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="screenshot">
-          <img src="../screenshot.png" class="screenshot"/>
+          <img src="../images/screenshot.png" class="screenshot"/>
         </div>
       </div>
     </transition>
