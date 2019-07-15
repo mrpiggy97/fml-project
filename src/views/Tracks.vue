@@ -37,7 +37,6 @@ import TrackInfo from '@/components/TrackInfo.vue'
 import SearchForm from '@/components/SearchForm.vue'
 
 import { setTimeout } from 'timers'
-import trackBus from '@/event-buses/trackBus'
 
 export default {
     name: 'Tracks',
