@@ -29,6 +29,7 @@
 
 <script>
 import { mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 import searchTracks from '@/api_services/searchTracks.js'
 
@@ -55,7 +56,15 @@ export default {
         }
     },
 
+    watch:{
+        query(newVal){
+            this.getTracks(newVal)
+        }
+    },
+
     computed:{
+        
+        ...mapState(['query']),
 
         message(){
 
@@ -134,10 +143,10 @@ export default {
         },
 
         //method will be called when component is created()
-        async presentApp(){
+        async presentApp(query){
             //make api call
             try{
-               let trackResponse = await searchTracks("aerosmith")
+               let trackResponse = await searchTracks(query)
                this.tracks = trackResponse.data.tracks.items
                this.firstLoadCompleted = true              
             }
@@ -173,15 +182,17 @@ export default {
     },
 
     created(){
-        this.presentApp()
+        console.log("tracks has been created")
+        if(this.query === null){
+            this.presentApp('aerosmith')
+        }
+        else{
+            this.presentApp(this.query)
+        }
     },
 
     mounted(){
         window.addEventListener('resize', this.onResize)
-
-        trackBus.$on('setQuery', (query) => {
-            this.getTracks(query)
-        })
     }
 }
 </script>

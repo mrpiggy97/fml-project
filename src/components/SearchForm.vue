@@ -14,7 +14,7 @@
 
 <script>
 import trackBus from '@/event-buses/trackBus.js'
-import setTimeout from 'timers'
+import { mapMutations } from 'vuex'
 
 export default {
     name: "SearchForm",
@@ -28,16 +28,13 @@ export default {
     },
 
     methods:{
+        ...mapMutations(['setQuery']),
+
         sendQuery(e){
             e.preventDefault()
+            this.setQuery(this.query)
             if(this.$route.name == 'about'){
                 this.$router.history.push({name: 'tracks'})
-                setTimeout(() => {
-                    trackBus.$emit('setQuery', this.query)
-                }, 2000)
-            }
-            else{
-                trackBus.$emit('setQuery', this.query)                
             }
         }
     }
