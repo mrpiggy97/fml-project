@@ -13,8 +13,7 @@
 </template>
 
 <script>
-import trackBus from '@/event-buses/trackBus.js'
-import setTimeout from 'timers'
+import { mapMutations } from 'vuex'
 
 export default {
     name: "SearchForm",
@@ -28,16 +27,13 @@ export default {
     },
 
     methods:{
+        ...mapMutations(['setQuery']),
+
         sendQuery(e){
             e.preventDefault()
+            this.setQuery(this.query)
             if(this.$route.name == 'about'){
                 this.$router.history.push({name: 'tracks'})
-                setTimeout(() => {
-                    trackBus.$emit('setQuery', this.query)
-                }, 2000)
-            }
-            else{
-                trackBus.$emit('setQuery', this.query)                
             }
         }
     }
@@ -45,46 +41,5 @@ export default {
 </script>
 
 <style scoped>
-div.searchform-component{
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-}
-
-form.search-form{
-    display: grid;
-    grid-template-columns: 5fr 100px;
-    grid-template-rows: 40px;
-    grid-template-areas: "search-input search-button";
-    grid-gap: 5px;
-    align-content: center;
-}
-
-input[type="text"].search-input{
-    grid-area: search-input;
-    border: teal solid;
-    border-radius: 5px;
-    border-top-right-radius: 0%;
-    border-bottom-right-radius: 0%;
-    font-size: large;
-}
-
-button.search-button{
-    grid-area: search-button;
-    color: white;
-    background-color: teal;
-    border: midnightblue solid;
-    border-radius: 5px;
-    border-top-left-radius: 0%;
-    border-bottom-left-radius: 0%;
-    cursor: pointer;
-}
-
-@media screen and (max-width: 769px){
-    form.search-form{
-        grid-template-columns: 5fr 1fr;
-        grid-template-rows: 1fr;
-        grid-gap: 2px;
-    }
-}
+@import './css/SearchForm.css';
 </style>

@@ -8,12 +8,17 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     track: '',
+    query: null
   },
 
   mutations: {
     setTrack(state, payload){
       state.track = payload
     },
+
+    setQuery(state, payload){
+      state.query = payload
+    }
   },
 
   actions: {
