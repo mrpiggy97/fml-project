@@ -45,9 +45,8 @@ export default {
         return{
 
             tracks: [],
-            tracksLoading: null,
+            tracksLoading: true,
             backendError: false,
-            firstLoadCompleted: false,
             showMessage: false,
             showLoader: true,
             showTrack: false,
@@ -56,6 +55,7 @@ export default {
     },
 
     watch:{
+        //everytime query changes make api call
         query(newVal){
             this.getTracks(newVal)
         }
@@ -82,13 +82,6 @@ export default {
 
                     numberOfTracks = `we found ${this.tracks.length} tracks`
                 }
-
-                else if(this.firstLoadCompleted === true && this.tracksLoading === null){
-                    //firstLoadCompleted will only be true once the initial
-                    //api call is finished and it is successful otherwise it will
-                    //remain as false
-                    numberOfTracks = "0 searches, take a look at Aerosmith"
-                }
             }
             return numberOfTracks
         }
@@ -99,28 +92,26 @@ export default {
         ...mapActions(['getTrack']),
 
         tracksAreLoading(){
+            if(this.backendError === true){
+                this.backendError = false
+            }
+
+            this.showTrack = false
             this.showMessage = false
             this.showLoader = true
-            this.showTrack = false
             this.tracksLoading = true
         },
 
         tracksAreDoneLoading(){
+            this.tracksLoading = false
             this.showLoader = false
             this.showMessage = true
             this.showTrack = true
-            this.tracksLoading = false
         },
 
         async getTracks(query){
 
             this.tracksAreLoading()
-
-            //if there was a failed api call let message computed
-            //property know
-            if(this.backendError === true){
-                this.backendError = false
-            }
 
             //make api call
             try{
@@ -143,8 +134,7 @@ export default {
             //make api call
             try{
                let trackResponse = await searchTracks(query)
-               this.tracks = trackResponse.data.tracks.items
-               this.firstLoadCompleted = true              
+               this.tracks = trackResponse.data.tracks.items       
             }
             //tell component there was an error with the servers
             catch(error){
@@ -153,9 +143,7 @@ export default {
             //show message, tracks, and hide loader that is by default
             //already showing
             setTimeout(() => {
-                this.showMessage = true
-                this.showTrack = true
-                this.showLoader = false
+                this.tracksAreDoneLoading()
             }, 1500)
 
             if (this.tracks.length >= 3){
@@ -172,13 +160,11 @@ export default {
 
     components: {
         TrackInfo,
-        //search form has an event-bus that we will listen and then
-        //call getTracks with the value it returns
         SearchForm,
     },
 
     created(){
-        console.log("tracks has been created")
+
         if(this.query === null){
             this.presentApp('aerosmith')
         }
