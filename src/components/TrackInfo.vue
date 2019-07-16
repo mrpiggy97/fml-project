@@ -63,11 +63,10 @@ export default {
         artists(){
 
             let musicians = []
-            let length = this.info.artists.length
+            
+            let artists = this.info.album.artists
 
-            for(let i=0; i < length; i++){
-                musicians.push({name: this.info.artists[i].name})
-            }
+            artists.map((artist) => musicians.push(artist))
 
             return musicians
         },
@@ -103,66 +102,5 @@ export default {
 </script>
 
 <style scoped>
-
-div.trackinfo-component{
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: 2fr 1fr;
-    grid-template-areas: "track-image"
-                         "track-artists";
-    justify-content: stretch;
-    align-content: stretch;
-    background-color: transparent;
-}
-
-div.track-image{
-    display: grid;
-    grid-area: track-image;
-    justify-items: stretch;
-    align-items: stretch;
-    background-size: cover;
-    background-position: center;
-    color: white;
-}
-
-div.track-name{
-    display:  grid;
-    justify-items: center;
-    align-items: center;
-    background-color: rgba(0,0,0,0.4);
-}
-
-div.track-artists{
-    display: grid;
-    grid-area: track-artists;
-    justify-items: center;
-    align-items: center;
-    color: teal;
-}
-
-div.no-track{
-    cursor: not-allowed;
-    opacity: 0.5;
-}
-
-div.has-track{
-    cursor: pointer;
-}
-
-i.play-icon{
-    color: teal;
-}
-
-div.selected{
-    border: purple solid;
-    border-radius: 5px;
-}
-
-div.unselected{
-    border: transparent solid;
-}
-
-span.generic{
-    color: white;
-}
+@import './css/TrackInfo.css';
 </style>

@@ -97,10 +97,6 @@ export default {
     methods:{
 
         ...mapActions(['getTrack']),
-        //computed property message depends on whether tracksLoading is true false or null
-        //we hide the message, show the loader and tell every track-info
-        //component to not show tracksAreLoading and tracksAreDoneLoading mofify
-        //the presentation of the app
 
         tracksAreLoading(){
             this.showMessage = false
@@ -120,7 +116,8 @@ export default {
 
             this.tracksAreLoading()
 
-            //if there was a failed api call wipe it
+            //if there was a failed api call let message computed
+            //property know
             if(this.backendError === true){
                 this.backendError = false
             }
@@ -197,121 +194,5 @@ export default {
 </script>
 
 <style>
-
-div.tracks-component{
-    display: grid;
-    grid-template-columns: 1fr 12fr 1fr;
-    grid-template-rows: 50px 50px 14fr;
-    grid-template-areas: ". loader ."
-                         ". message ."
-                         ". tracks .";
-    grid-gap: 30px;
-    justify-content: center;
-    align-content: center;
-    min-height: 100%;
-    max-height: 100%;
-}
-
-div.loader{
-    display: grid;
-    grid-area: loader;
-    background-color: transparent;
-    justify-items: center;
-    align-items: center;
-}
-
-div.message{
-    display: grid;
-    grid-area: message;
-    justify-items: center;
-    align-items: center;
-    border: midnightblue solid;
-    border-radius: 5px;
-    background-color: teal;
-}
-
-div.tracks{
-    display: grid;
-    grid-area: tracks;
-    grid-template-columns: repeat(3, 150px);
-    grid-gap: 5px;
-    justify-content: space-around;
-    align-content: stretch;
-    background-color: white;
-}
-
-i.search-icon{
-    color: silver;
-}
-
-span.message-text{
-    font-size: x-large;
-    color: white;
-}
-
-/*loader animation*/
-p.loader {
-  border: 16px solid #f3f3f3;
-  border-radius: 50%;
-  border-top: 16px solid purple;
-  border-bottom: 16px solid mediumblue;
-  border-right: 16px solid white;
-  border-left: 16px solid green;
-  min-width: 30px;
-  max-width: 30px;
-  min-height: 30px;
-  max-height: 30px;
-  background-color: white;
-  -webkit-animation: spin 2s linear infinite;
-  animation: spin 2s linear infinite;
-}
-
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/*end of loaer animation*/
-
-@media screen and (max-width: 769px){
-
-    div.tracks-component{
-        grid-template-columns: 1fr;
-        grid-template-rows: 30px 50px 80px 14fr;
-        grid-template-areas: "loader"
-                             "searching-tracks"
-                             "message"
-                             "tracks";
-    }
-
-    div.searching-tracks{
-        display: grid;
-        grid-area: searching-tracks;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr;
-        justify-content: stretch;
-        align-content: stretch;
-    }
-
-    div.tracks{
-        grid-template-columns: repeat(3, 130px);
-    }
-}
-
-@media screen and (max-width: 375px){
-
-    div.tracks-component{
-        grid-template-rows: 50px 50px 70px 14fr;
-    }
-
-    div.tracks{
-        grid-template-columns: repeat(3, 100px);
-    }
-}
-
+@import './css/Tracks.css';
 </style>

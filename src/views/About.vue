@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import {setTimeout} from 'timers'
+import { setTimeout } from 'timers'
 
 export default {
   name: 'About',
@@ -68,115 +68,5 @@ export default {
 </script>
 
 <style scoped>
-
-div.view-about{
-  display: grid;
-  grid-template-columns: 800px;
-  grid-template-rows: repeat(2, 400px) 700px;
-  justify-content: center;
-  align-content: center;
-  grid-gap: 150px;
-  font-size: x-large;
-  font-family: sans-serif;
-  color: teal;
-}
-
-/*github layouot*/
-
-div.github{
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-  justify-items: center;
-  align-items: center;
-  font-size: xx-large;
-  border: purple dashed;
-  border-radius: 5px;
-}
-
-/*end of github area*/
-
-/*start of stack layout*/
-div.stack{
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 4fr;
-  grid-template-areas: "title-stack"
-                       "stack-images";
-  grid-gap: 0px;
-  border: navy dashed;
-  border-radius: 5px;
-}
-
-div.title-stack{
-  display: grid;
-  grid-area: title-stack;
-  justify-items: center;
-}
-
-div.stack-images{
-  display: grid;
-  grid-area: stack-images;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-}
-
-img.stack-image{
-  height: 40%;
-  width: 80%;
-}
-
-/*end of stack layout*/
-
-/*about layout*/
-div.about{
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr 3fr 3fr;
-  grid-template-areas: "title-about"
-                       "description"
-                       "screenshot";
-  justify-content: stretch;
-  align-content: stretch;
-  border: darkgreen dashed;
-  border-radius: 5px;
-}
-
-div.title-about{
-  display: grid;
-  grid-area: title-about;
-  justify-items: center;
-  align-items: center;
-}
-
-div.description{
-  display: grid;
-  justify-items: center;
-  align-items: center;
-  grid-area: description;
-}
-
-div.screenshot{
-  display: grid;
-  grid-area: screenshot;
-  justify-items: center;
-  align-items: center;
-}
-
-img.screenshot{
-  min-width: 90%;
-  max-width: 90%;
-  min-height: 90%;
-  max-height: 90%;
-}
-
-/*end of about layout*/
-
-@media screen and (max-width: 769px){
-
-  div.view-about{
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(2, 600px) 1000px;
-  }
-}
+@import './css/About.css';
 </style>
