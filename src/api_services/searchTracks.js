@@ -1,12 +1,10 @@
-import axios from 'axios'
-
-import api_urls from './api_urls.js'
+import axiosInstance from './axiosInstance.js'
 
 function searchTracks(q){
 
-    return axios({
+    return axiosInstance({
         method: "get",
-        url: api_urls.search,
+        url: '/search',
         params:{
             type: "track",
             q: q
