@@ -14,7 +14,7 @@
             <div class="track-artists" v-show="appear">
                 <span>artists:</span>
                 <span v-for="artist in artists"
-                :key="artist.name" class="artist-name">{{artist.name}}</span> 
+                :key="artist.name" class="artist-name~">{{artist.name}}</span> 
                 <i class="fa fa-play w3-large play-icon"></i>                      
             </div>
         </transition>
@@ -72,7 +72,7 @@ export default {
             }
 
             else{
-                for(let i=0; i < artist.length; i++){
+                for(let i=0; i < artists.length; i++){
                     musicians.push(artists[i])
                 }
             }
