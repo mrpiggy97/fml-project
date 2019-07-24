@@ -13,7 +13,8 @@
         <transition name="slide">
             <div class="track-artists" v-show="appear">
                 <span>artists:</span>
-                <span v-for="artist in artists" :key="artist.name">{{artist.name}}</span> 
+                <span v-for="artist in artists"
+                :key="artist.name" class="artist-name">{{artist.name}}</span> 
                 <i class="fa fa-play w3-large play-icon"></i>                      
             </div>
         </transition>
@@ -66,7 +67,15 @@ export default {
             
             let artists = this.info.album.artists
 
-            artists.map((artist) => musicians.push(artist))
+            if(artists.length <= 2){
+                artists.map((artist) => musicians.push(artist))       
+            }
+
+            else{
+                for(let i=0; i < artist.length; i++){
+                    musicians.push(artists[i])
+                }
+            }
 
             return musicians
         },
