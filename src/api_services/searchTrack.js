@@ -1,13 +1,9 @@
-import axios from 'axios'
-
-import api_urls from './api_urls.js'
+import axiosInstance from './axiosInstance.js'
 
 function searchTrack(id){
-
-    let url = api_urls.track.replace(':id', id)
-    return axios({
+    return axiosInstance({
         method: 'get',
-        url: url,
+        url: `/tracks/${id}`,
         timeout: 5000,
     })
 }
