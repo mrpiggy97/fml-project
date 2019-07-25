@@ -45,7 +45,7 @@ export default {
         //state
         const tracks = value([])
         const tracksLoading = value(true)
-        const backendError = value(false)
+        let backendError = false
         const showMessage = value(false)
         const showLoader = value(true)
         const showTrack = value(false)
@@ -60,7 +60,7 @@ export default {
 
             let numberOfTracks = null;
 
-            if(backendError.value === true){
+            if(backendError === true){
                 numberOfTracks = "there was an error with the servers"
             }
 
@@ -83,8 +83,8 @@ export default {
         }
 
         const tracksAreLoading = () => {
-            if(backendError.value === true){
-                backendError.value = false
+            if(backendError === true){
+                backendError = false
             }
 
             showTrack.value = false
@@ -112,7 +112,8 @@ export default {
             //tell the component there was an error, computed property
             //message depends on this
             catch(error){
-                backendError.value = true
+                console.log(error)
+                backendError = true
             }
             //modify app presentation
             setTimeout(() => {
@@ -129,7 +130,8 @@ export default {
             }
             //tell component there was an error with the servers
             catch(error){
-                backendError.value = true
+                console.log(error)
+                backendError = true
             }
             //show message, tracks, and hide loader that is by default
             //already showing
@@ -171,7 +173,6 @@ export default {
             //state
             tracks,
             tracksLoading,
-            backendError,
             showMessage,
             showLoader,
             showTrack,
