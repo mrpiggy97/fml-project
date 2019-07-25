@@ -1,9 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import { plugin } from 'vue-function-api'
 
 import Tracks from './views/Tracks.vue'
 
 Vue.use(Router)
+Vue.use(plugin)
 
 export default new Router({
   mode: 'history',

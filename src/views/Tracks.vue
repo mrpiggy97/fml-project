@@ -28,8 +28,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
-import { mapState } from 'vuex'
+import { value, computed,  onCreated, onMounted, watch } from 'vue-function-api'
 
 import searchTracks from '@/api_services/searchTracks.js'
 
@@ -41,120 +40,152 @@ import { setTimeout } from 'timers'
 export default {
     name: 'Tracks',
 
-    data(){
-        return{
+    setup(props, context){
 
-            tracks: [],
-            tracksLoading: true,
-            backendError: false,
-            showMessage: false,
-            showLoader: true,
-            showTrack: false,
-            isMobile: window.screen.width <= 769
-        }
-    },
+        //state
+        const tracks = value([])
+        const tracksLoading = value(true)
+        const backendError = value(false)
+        const showMessage = value(false)
+        const showLoader = value(true)
+        const showTrack = value(false)
+        const isMobile = value(window.screen.width <= 769)
 
-    watch:{
-        //everytime query changes make api call
-        query(newVal){
-            this.getTracks(newVal)
-        }
-    },
+        //computed
+        const query = computed(() => {
+            return context.root.$store.state.query
+        })
 
-    computed:{
-        
-        ...mapState(['query']),
-
-        message(){
+        const message = computed(() => {
 
             let numberOfTracks = null;
 
-            if(this.backendError === true){
+            if(backendError.value === true){
                 numberOfTracks = "there was an error with the servers"
             }
 
             else{
 
-                if(this.tracksLoading === false){
+                if(tracksLoading.value === false){
                     //when tracksLoading is false it means the api call
                     //was successful so we can begin to count the number
                     //of tracks found
 
-                    numberOfTracks = `we found ${this.tracks.length} tracks`
+                    numberOfTracks = `we found ${tracks.value.length} tracks`
                 }
             }
             return numberOfTracks
+        })
+
+        //methods
+        const searchForTrack = (id) => {
+            context.root.$store.dispatch('getTrack', id)
         }
-    },
 
-    methods:{
-
-        ...mapActions(['getTrack']),
-
-        tracksAreLoading(){
-            if(this.backendError === true){
-                this.backendError = false
+        const tracksAreLoading = () => {
+            if(backendError.value === true){
+                backendError.value = false
             }
 
-            this.showTrack = false
-            this.showMessage = false
-            this.showLoader = true
-            this.tracksLoading = true
-        },
+            showTrack.value = false
+            showMessage.value = false
+            showLoader.value = true
+            tracksLoading.value = true
+        }
 
-        tracksAreDoneLoading(){
-            this.tracksLoading = false
-            this.showLoader = false
-            this.showMessage = true
-            this.showTrack = true
-        },
+        const tracksAreDoneLoading = () => {
+           tracksLoading.value = false
+           showLoader.value = false
+           showMessage.value = true
+           showTrack.value = true
+        }
 
-        async getTracks(query){
+        const getTracks = async (words) => {
 
-            this.tracksAreLoading()
+            tracksAreLoading()
 
             //make api call
             try{
-                let response = await searchTracks(query)
-                this.tracks = response.data.tracks.items
+                let response = await searchTracks(words)
+                tracks.value = response.data.tracks.items
             }
             //tell the component there was an error, computed property
             //message depends on this
             catch(error){
-                this.backendError = true
+                backendError.value = true
             }
             //modify app presentation
             setTimeout(() => {
-                this.tracksAreDoneLoading()
+                tracksAreDoneLoading()
             }, 1000)
-        },
+        }
 
-        //method will be called when component is created()
-        async presentApp(query){
+        //method will be called when component is created
+        const presentApp = async (words) => {
             //make api call
             try{
-               let trackResponse = await searchTracks(query)
-               this.tracks = trackResponse.data.tracks.items       
+               let trackResponse = await searchTracks(words)
+               tracks.value = trackResponse.data.tracks.items       
             }
             //tell component there was an error with the servers
             catch(error){
-                this.backendError = true
+                backendError.value = true
             }
             //show message, tracks, and hide loader that is by default
             //already showing
             setTimeout(() => {
-                this.tracksAreDoneLoading()
+                tracksAreDoneLoading()
             }, 1500)
 
-            if (this.tracks.length >= 3){
+            if (tracks.value.length >= 3){
                 setTimeout(() => {
-                    this.getTrack(this.tracks[3].id)
+                    searchForTrack(tracks.value[3].id)
                 }, 2000)                
             }
-        },
+        }
 
-        onResize(){
-            this.isMobile = window.screen.width <= 769
+        const onResize = () => {
+            isMobile.value = window.screen.width <= 769
+        }
+
+        onCreated(() => {
+            if(query.value === null){
+                presentApp('aerosmith')
+            }
+            else{
+                presentApp(query.value)
+            }
+        })
+
+        onMounted(() => {
+            window.addEventListener('resize', onResize())
+        })
+
+        watch(
+            () => query.value, (newVal) => {
+                getTracks(newVal)
+            }
+        )
+
+        return{
+            //state
+            tracks,
+            tracksLoading,
+            backendError,
+            showMessage,
+            showLoader,
+            showTrack,
+            isMobile,
+            //computed
+            query,
+            message,
+            //methods
+            searchForTrack,
+            getTracks,
+            presentApp,
+            tracksAreLoading,
+            tracksAreDoneLoading,
+            onResize,
         }
     },
 
@@ -162,20 +193,6 @@ export default {
         TrackInfo,
         SearchForm,
     },
-
-    created(){
-
-        if(this.query === null){
-            this.presentApp('aerosmith')
-        }
-        else{
-            this.presentApp(this.query)
-        }
-    },
-
-    mounted(){
-        window.addEventListener('resize', this.onResize)
-    }
 }
 </script>
 

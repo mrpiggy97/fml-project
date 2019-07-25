@@ -49,20 +49,24 @@
 
 <script>
 import { setTimeout } from 'timers'
+import { value, onCreated } from 'vue-function-api'
 
 export default {
   name: 'About',
 
-  data(){
-    return{
-      showItems: false,
-    }
-  },
+  setup(){
+    //state
+    const showItems = value(false)
 
-  created(){
-    setTimeout(() => {
-      this.showItems = true
-    }, 0.500)
+    onCreated(() => {
+      setTimeout(() => {
+        showItems.value = true
+      }, 0.500)
+    })
+
+    return{
+      showItems
+    }
   }
 }
 </script>
