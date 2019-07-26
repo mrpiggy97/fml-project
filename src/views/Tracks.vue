@@ -6,7 +6,7 @@
 
         <div class="loader">
             <transition name="slide">
-                <p class="loader" v-show="showLoader"></p>
+                <p class="loader" v-show="tracks.loading"></p>
             </transition>
         </div>
 
@@ -16,13 +16,13 @@
 
         <div class="message">
             <transition name="slide">
-                <span class="message-text" v-show="showMessage">{{message}}</span>
+                <span class="message-text" v-show="message">{{message}}</span>
             </transition>
         </div>
 
         <div class="tracks">
-            <track-info v-for="track in tracks" :key="track.id"
-            :appear="showTrack" :info="track"></track-info>
+            <track-info v-for="track in tracks.items" :key="track.id"
+            :appear="tracks.showTrack" :info="track"></track-info>
         </div>
     </div>
 </template>
@@ -44,13 +44,14 @@ export default {
     data(){
         return{
 
-            tracks: [],
-            tracksLoading: true,
+            tracks: {
+                items: null,
+                loading: true,
+                showTrack: false
+            },
             backendError: false,
-            showMessage: false,
-            showLoader: true,
-            showTrack: false,
-            isMobile: window.screen.width <= 769
+            isMobile: window.screen.width <= 769,
+            firstLoad: true
         }
     },
 
@@ -75,12 +76,9 @@ export default {
 
             else{
 
-                if(this.tracksLoading === false){
-                    //when tracksLoading is false it means the api call
-                    //was successful so we can begin to count the number
-                    //of tracks found
+                if(this.tracks.items !== null){
 
-                    numberOfTracks = `we found ${this.tracks.length} tracks`
+                    numberOfTracks = `we found ${this.tracks.items.length} tracks`
                 }
             }
             return numberOfTracks
@@ -96,27 +94,25 @@ export default {
                 this.backendError = false
             }
 
-            this.showTrack = false
-            this.showMessage = false
-            this.showLoader = true
-            this.tracksLoading = true
+            this.tracks.showTrack = false
+            this.tracks.loading = true
         },
 
         tracksAreDoneLoading(){
-            this.tracksLoading = false
-            this.showLoader = false
-            this.showMessage = true
-            this.showTrack = true
+            this.tracks.loading = false
+            this.tracks.showTrack = true
         },
 
         async getTracks(query){
 
-            this.tracksAreLoading()
+            if(this.firstLoad === false){
+                this.tracksAreLoading()
+            }
 
             //make api call
             try{
                 let response = await searchTracks(query)
-                this.tracks = response.data.tracks.items
+                this.tracks.items = response.data.tracks.items
             }
             //tell the component there was an error, computed property
             //message depends on this
@@ -127,30 +123,6 @@ export default {
             setTimeout(() => {
                 this.tracksAreDoneLoading()
             }, 1000)
-        },
-
-        //method will be called when component is created()
-        async presentApp(query){
-            //make api call
-            try{
-               let trackResponse = await searchTracks(query)
-               this.tracks = trackResponse.data.tracks.items       
-            }
-            //tell component there was an error with the servers
-            catch(error){
-                this.backendError = true
-            }
-            //show message, tracks, and hide loader that is by default
-            //already showing
-            setTimeout(() => {
-                this.tracksAreDoneLoading()
-            }, 1500)
-
-            if (this.tracks.length >= 3){
-                setTimeout(() => {
-                    this.getTrack(this.tracks[3].id)
-                }, 2000)                
-            }
         },
 
         onResize(){
@@ -165,12 +137,14 @@ export default {
 
     created(){
 
-        if(this.query === null){
-            this.presentApp('aerosmith')
-        }
-        else{
-            this.presentApp(this.query)
-        }
+        this.getTracks(this.query).then(() => {
+            this.firstLoad = false
+
+            if(this.tracks.items.length >= 3){
+                let id = this.tracks.items[2].id
+                this.getTrack(id)
+            }
+        })
     },
 
     mounted(){
