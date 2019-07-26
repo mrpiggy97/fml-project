@@ -43,14 +43,14 @@ export default {
     setup(props, context){
 
         //state and computed propertries
-        const { tracks, backendError, isMobile, message, query, firstLoad } = setApp(context)
+        const { tracks, backendError, message, isMobile, query, firstLoad } = setApp(context)
 
         //methods
-        const getTrack = (id) => {
+        function getTrack(id){
             context.root.$store.dispatch('getTrack', id)
         }
 
-        const searching = () => {
+        function searching(){
             if(backendError.value === true){
                 backendError.value = false
             }
@@ -59,12 +59,12 @@ export default {
             tracks.value.showTrack = false
         }
 
-        const searchDone = () => {
+        function searchDone(){
             tracks.value.loading = false
             tracks.value.showTrack = true
         }
 
-        const getTracks = async (querySearch) => {
+        async function getTracks(querySearch){
             
             if(firstLoad.value === false){
                 searching()
@@ -84,7 +84,7 @@ export default {
             }, 1000)
         }
 
-        const onResize = () => {
+        function onResize(){
             isMobile.value = window.screen.width <= 769
         }
 
