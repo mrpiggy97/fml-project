@@ -6,7 +6,7 @@
 
         <div class="loader">
             <transition name="slide">
-                <p class="loader" v-show="loading"></p>
+                <p class="loader" v-show="tracks.loading"></p>
             </transition>
         </div>
 
@@ -21,15 +21,14 @@
         </div>
 
         <div class="tracks">
-            <track-info v-for="track in tracks" :key="track.id"
-            :appear="showTrack" :info="track"></track-info>
+            <track-info v-for="track in tracks.items" :key="track.id"
+            :appear="tracks.showTrack" :info="track"></track-info>
         </div>
     </div>
 </template>
 
 <script>
-import { value, computed,  onCreated, onMounted, watch } from 'vue-function-api'
-import generalState from './functions/TracksFunctions.js'
+import { onCreated, onMounted, watch } from 'vue-function-api'
 
 import searchTracks from '@/api_services/searchTracks.js'
 
@@ -37,6 +36,7 @@ import TrackInfo from '@/components/TrackInfo.vue'
 import SearchForm from '@/components/SearchForm.vue'
 
 import { setTimeout } from 'timers'
+import setStateAndComputed from './functions/Tracks';
 
 export default {
     name: 'Tracks',
@@ -44,12 +44,7 @@ export default {
     setup(props, context){
 
         //state
-        const {tracks, loading, backendError, message, showTrack} = generalState()
-        const isMobile = value(window.screen.width <= 769)
-
-        const query = computed(() => {
-            return context.root.$store.state.query
-        })
+        const {tracks, backendError, isMobile, message, query} = setStateAndComputed(context)
 
         const searchForTrack = (id) => {
             context.root.$store.dispatch('getTrack', id)
@@ -58,8 +53,8 @@ export default {
         //methods
         const getTracks = async (querySearch) => {
             
-            if(loading.value === false){
-                loading.value = true
+            if(tracks.value.loading === false){
+                tracks.value.loading = true
             }
 
             if(backendError.value === true){
@@ -68,7 +63,7 @@ export default {
 
             try{
                 let response = await searchTracks(querySearch)
-                tracks.value = response.data.tracks.items
+                tracks.value.items = response.data.tracks.items
             }
 
             catch(error){
@@ -76,8 +71,8 @@ export default {
             }
 
             setTimeout(() => {
-                loading.value = false
-                showTrack.value = true
+                tracks.value.loading = false
+                tracks.value.showTrack = true
             }, 1000)
         }
 
@@ -95,15 +90,13 @@ export default {
 
         onCreated(() => {
             getTracks(query.value).then(() => {
-                searchForTrack(tracks.value[2].id)
+                searchForTrack(tracks.items.value[2].id)
             })
         })
 
         return{
             tracks,
-            loading,
             message,
-            showTrack,
             isMobile,
         }
     },
