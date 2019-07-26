@@ -90,7 +90,7 @@ export default {
 
         onCreated(() => {
             getTracks(query.value).then(() => {
-                searchForTrack(tracks.items.value[2].id)
+                searchForTrack(tracks.value.items[2].id)
             })
         })
 

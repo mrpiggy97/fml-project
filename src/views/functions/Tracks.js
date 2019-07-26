@@ -22,9 +22,9 @@ function setStateAndComputed(context){
         return numberOfTracks
     })
 
-    const query = () => {
+    const query = computed(() => {
         return context.root.$store.state.query
-    }
+    })
 
     return{
         tracks,
