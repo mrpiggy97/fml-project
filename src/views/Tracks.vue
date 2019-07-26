@@ -42,9 +42,10 @@ export default {
 
     setup(props, context){
 
-        //state
+        //state and computed propertries
         const { tracks, backendError, isMobile, message, query, firstLoad } = setApp(context)
 
+        //methods
         const getTrack = (id) => {
             context.root.$store.dispatch('getTrack', id)
         }
@@ -63,7 +64,6 @@ export default {
             tracks.value.showTrack = true
         }
 
-        //methods
         const getTracks = async (querySearch) => {
             
             if(firstLoad.value === false){
