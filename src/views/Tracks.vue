@@ -43,7 +43,7 @@ export default {
     setup(props, context){
 
         //state
-        const {tracks, backendError, isMobile, message, query, firstLoad } = setApp(context)
+        const { tracks, backendError, isMobile, message, query, firstLoad } = setApp(context)
 
         const getTrack = (id) => {
             context.root.$store.dispatch('getTrack', id)
