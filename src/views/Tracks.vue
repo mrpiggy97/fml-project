@@ -29,14 +29,13 @@
 
 <script>
 import { onCreated, onMounted, watch } from 'vue-function-api'
+import { setTimeout } from 'timers'
 
+import setApp from './functions/Tracks'
 import searchTracks from '@/api_services/searchTracks.js'
 
 import TrackInfo from '@/components/TrackInfo.vue'
 import SearchForm from '@/components/SearchForm.vue'
-
-import { setTimeout } from 'timers'
-import setStateAndComputed from './functions/Tracks';
 
 export default {
     name: 'Tracks',
@@ -44,21 +43,31 @@ export default {
     setup(props, context){
 
         //state
-        const {tracks, backendError, isMobile, message, query} = setStateAndComputed(context)
+        const {tracks, backendError, isMobile, message, query, firstLoad } = setApp(context)
 
-        const searchForTrack = (id) => {
+        const getTrack = (id) => {
             context.root.$store.dispatch('getTrack', id)
+        }
+
+        const searching = () => {
+            if(backendError.value === true){
+                backendError.value = false
+            }
+
+            tracks.value.loading = true,
+            tracks.value.showTrack = false
+        }
+
+        const searchDone = () => {
+            tracks.value.loading = false
+            tracks.value.showTrack = true
         }
 
         //methods
         const getTracks = async (querySearch) => {
             
-            if(tracks.value.loading === false){
-                tracks.value.loading = true
-            }
-
-            if(backendError.value === true){
-                backendError.value = false
+            if(firstLoad.value === false){
+                searching()
             }
 
             try{
@@ -71,8 +80,7 @@ export default {
             }
 
             setTimeout(() => {
-                tracks.value.loading = false
-                tracks.value.showTrack = true
+                searchDone()
             }, 1000)
         }
 
@@ -90,7 +98,12 @@ export default {
 
         onCreated(() => {
             getTracks(query.value).then(() => {
-                searchForTrack(tracks.value.items[2].id)
+                firstLoad.value = false
+
+                if(tracks.value.items.length >= 3){
+                    let id = tracks.value.items[2].id
+                    getTrack(id)
+                }
             })
         })
 

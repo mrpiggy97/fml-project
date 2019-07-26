@@ -1,10 +1,11 @@
 import { value, computed } from 'vue-function-api'
 
-function setStateAndComputed(context){
+function setApp(context){
 
     const tracks = value({items: null, loading: true, showTrack: false})
     const backendError = value(false)
     const isMobile = value(window.screen.width <= 769)
+    const firstLoad = value(true)
 
     
     const message = computed(() => {
@@ -31,8 +32,9 @@ function setStateAndComputed(context){
         backendError,
         isMobile,
         message,
-        query
+        query,
+        firstLoad
     }
 }
 
-export default setStateAndComputed
+export default setApp
