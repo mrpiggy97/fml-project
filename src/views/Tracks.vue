@@ -16,7 +16,7 @@
 
         <div class="message">
             <transition name="slide">
-                <span class="message-text" v-show="tracks.loading === false">{{message}}</span>
+                <span class="message-text" v-show="tracks.showMessage">{{message}}</span>
             </transition>
         </div>
 
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { value, onCreated, onMounted, watch, computed } from 'vue-function-api'
+import { state as setState, onCreated, onMounted, watch, computed } from 'vue-function-api'
 import { setTimeout } from 'timers'
 import searchTracks from '@/api_services/searchTracks.js'
 
@@ -38,49 +38,69 @@ import SearchForm from '@/components/SearchForm.vue'
 
 function APICall(){
 
-    const tracks = value({items: [], loading: true, showTrack: false})
-    const firstLoad = value(true)
-    const backendError = value(false)
+    const state = setState({
+        tracks: {
+            items: [],
+            loading: true,
+            showTrack: false,
+            showMessage: false
+        },
+        firstLoad: true,
+        backendError: false,
+    })
+
+    //message will be displayed when call to api has been endend
+    //its result will depend on state.tracks.items.length
+    //and state.backendError
     const message = computed(() => {
         
         let numberOfTracks = null
+        let itemsLength = state.tracks.items.length
 
-        if(tracks.value.items.length > 0 && backendError.value === false){
-            numberOfTracks = `we found ${tracks.value.items.length} tracks`
+        if(itemsLength > 0 && state.backendError === false){
+            numberOfTracks = `we found ${itemsLength} tracks`
         }
-        else if(tracks.value.items.length == 0 && backendError.value === true){
+        else if(itemsLength == 0 && state.backendError === true){
             numberOfTracks = 'sorry there was an error with the api'
         }
 
         return numberOfTracks
     })
 
+    //began call to api
     const searching = () => {
-        if(backendError.value === true){
-            backendError.value = false
+        if(state.backendError === true){
+            state.backendError = false
         }
-        tracks.value.loading = true
-        tracks.value.showTrack = false
+        state.tracks.showMessage = false
+        state.tracks.loading = true
+        state.tracks.showTrack = false
     }
 
+    //call to api has been completed
     const searchDone = () => {
-        tracks.value.loading = false
-        tracks.value.showTrack = true
+        if(state.firstLoad === true){
+            state.firstLoad = false
+        }
+        state.tracks.showMessage = true
+        state.tracks.loading = false
+        state.tracks.showTrack = true
     }
-
+    
+    //call to api
     const getTracks = async (querySearch) => {
         
-        if(firstLoad.value === false){
+        if(state.firstLoad === false){
             searching()
         }
 
         try{
             let response = await searchTracks(querySearch)
-            tracks.value.items = response.data.tracks.items
+            state.tracks.items = response.data.tracks.items
         }
 
         catch(error){
-            backendError.value = true
+            state.backendError = true
         }
 
         setTimeout(() => {
@@ -89,8 +109,7 @@ function APICall(){
     }
 
     return{
-        tracks,
-        firstLoad,
+        tracks: state.tracks,
         message,
         getTracks
     }
@@ -98,14 +117,16 @@ function APICall(){
 
 function mobileLayout(){
 
-    const isMobile = value(window.screen.width <= 769)
+    const state = setState({
+        isMobile: window.screen.width <= 769
+    })
 
     const onResize = () => {
-        isMobile.value = window.screen.width <= 769
+        state.isMobile = window.screen.width <= 769
     }
 
     return{
-        isMobile,
+        isMobile: state.isMobile,
         onResize
     }
 }
@@ -130,10 +151,15 @@ function getStore(context){
 export default {
     name: 'Tracks',
 
+    components: {
+        TrackInfo,
+        SearchForm,
+    },
+
     setup(props, context){
 
         //state and computed
-        const { tracks, firstLoad, message, getTracks } = APICall()
+        const { tracks, message, getTracks } = APICall()
         const { isMobile, onResize } = mobileLayout()
         const { query, getTrack } = getStore(context)
 
@@ -147,10 +173,9 @@ export default {
 
         onCreated(() => {
             getTracks(query.value).then(() => {
-                firstLoad.value = false
 
-                if(tracks.value.items.length >= 3){
-                    let id = tracks.value.items[2].id
+                if(tracks.items.length >= 3){
+                    let id = tracks.items[2].id
                     getTrack(id)
                 }
             })
@@ -161,11 +186,6 @@ export default {
             message,
             isMobile,
         }
-    },
-
-    components: {
-        TrackInfo,
-        SearchForm,
     },
 }
 </script>
