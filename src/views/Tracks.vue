@@ -45,7 +45,7 @@ export default {
         return{
 
             tracks: {
-                items: null,
+                items: [],
                 loading: true,
                 showTrack: false
             },
@@ -76,7 +76,7 @@ export default {
 
             else{
 
-                if(this.tracks.items !== null){
+                if(this.tracks.items.length > 0){
 
                     numberOfTracks = `we found ${this.tracks.items.length} tracks`
                 }
