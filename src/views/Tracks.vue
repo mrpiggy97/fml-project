@@ -16,7 +16,7 @@
 
         <div class="message">
             <transition name="slide">
-                <span class="message-text" v-show="tracks.showMessage">{{message}}</span>
+                <span class="message-text" v-show="showMessage">{{message}}</span>
             </transition>
         </div>
 
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { state as setState, onCreated, onMounted, watch, computed } from 'vue-function-api'
+import { value, onCreated, onMounted, watch, computed } from 'vue-function-api'
 import { setTimeout } from 'timers'
 import searchTracks from '@/api_services/searchTracks.js'
 
@@ -38,16 +38,14 @@ import SearchForm from '@/components/SearchForm.vue'
 
 function APICall(){
 
-    const state = setState({
-        tracks: {
-            items: [],
-            loading: true,
-            showTrack: false,
-            showMessage: false
-        },
-        firstLoad: true,
-        backendError: false,
+    const tracks = value({
+        items: [],
+        showTrack: false,
+        loading: true
     })
+    const showMessage = value(false)
+    const firstLoad = value(true)
+    const backendError = value(false)
 
     //message will be displayed when call to api has been endend
     //its result will depend on state.tracks.items.length
@@ -55,12 +53,12 @@ function APICall(){
     const message = computed(() => {
         
         let numberOfTracks = null
-        let itemsLength = state.tracks.items.length
+        let itemsLength = tracks.value.items.length
 
-        if(itemsLength > 0 && state.backendError === false){
+        if(itemsLength > 0 && backendError.value === false){
             numberOfTracks = `we found ${itemsLength} tracks`
         }
-        else if(itemsLength == 0 && state.backendError === true){
+        else if(itemsLength == 0 && backendError.value === true){
             numberOfTracks = 'sorry there was an error with the api'
         }
 
@@ -69,38 +67,39 @@ function APICall(){
 
     //began call to api
     const searching = () => {
-        if(state.backendError === true){
-            state.backendError = false
+        if(backendError.value === true){
+            backendError.value = false
         }
-        state.tracks.showMessage = false
-        state.tracks.loading = true
-        state.tracks.showTrack = false
+        showMessage.value = false
+        tracks.value.showTrack = false
+        tracks.value.loading = true
     }
 
     //call to api has been completed
     const searchDone = () => {
-        if(state.firstLoad === true){
-            state.firstLoad = false
+        if(firstLoad.value === true){
+            firstLoad.value = false
         }
-        state.tracks.showMessage = true
-        state.tracks.loading = false
-        state.tracks.showTrack = true
+        showMessage.value = true
+        tracks.value.showTrack = true
+        tracks.value.loading = false
     }
     
     //call to api
     const getTracks = async (querySearch) => {
         
-        if(state.firstLoad === false){
+        if(firstLoad.value === false){
             searching()
         }
 
         try{
             let response = await searchTracks(querySearch)
-            state.tracks.items = response.data.tracks.items
+            tracks.value.items = response.data.tracks.items
         }
 
         catch(error){
-            state.backendError = true
+            console.log(error)
+            backendError.value = true
         }
 
         setTimeout(() => {
@@ -109,7 +108,8 @@ function APICall(){
     }
 
     return{
-        tracks: state.tracks,
+        tracks,
+        showMessage,
         message,
         getTracks
     }
@@ -117,16 +117,14 @@ function APICall(){
 
 function mobileLayout(){
 
-    const state = setState({
-        isMobile: window.screen.width <= 769
-    })
+    const isMobile = value(window.screen.width <= 769)
 
     const onResize = () => {
-        state.isMobile = window.screen.width <= 769
+        isMobile.value = window.screen.width <= 769
     }
 
     return{
-        isMobile: state.isMobile,
+        isMobile,
         onResize
     }
 }
@@ -159,7 +157,7 @@ export default {
     setup(props, context){
 
         //state and computed
-        const { tracks, message, getTracks } = APICall()
+        const { tracks, showMessage, message, getTracks } = APICall()
         const { isMobile, onResize } = mobileLayout()
         const { query, getTrack } = getStore(context)
 
@@ -174,8 +172,8 @@ export default {
         onCreated(() => {
             getTracks(query.value).then(() => {
 
-                if(tracks.items.length >= 3){
-                    let id = tracks.items[2].id
+                if(tracks.value.items.length >= 3){
+                    let id = tracks.value.items[2].id
                     getTrack(id)
                 }
             })
@@ -183,6 +181,7 @@ export default {
 
         return{
             tracks,
+            showMessage,
             message,
             isMobile,
         }
