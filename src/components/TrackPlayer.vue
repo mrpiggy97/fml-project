@@ -1,6 +1,7 @@
 <template>
-    <div class="player-component" :style="{backgroundImage: image_url}">
-        <audio :src="song_preview" ref="player" @timeupdate="logTime" :volume="volume_converter">
+    <div class="player-component" :style="{backgroundImage: imageURL}">
+        <audio :src="song_preview" ref="player" @timeupdate="followingTime"
+        :volume="volumeConverter">
         </audio>
 
         <i class="fa fa-play-circle-o player" @click="play" v-if="paused"></i>
@@ -8,11 +9,69 @@
 
         <input class="volume" type="range" v-model="volume" min="0" max="100"/>
         <input class="timer" type="range" min="0" max="30"
-        :value="timer" ref="timer" @change="logSeeked"/>
+        :value="timer" ref="timer" @change="seekTime"/>
     </div>
 </template>
 
 <script>
+import { state as setState, computed } from 'vue-function-api'
+
+function playerControls(context){
+
+    const state = ({
+        controls: {
+            volume: 30,
+            paused: true
+        }
+    })
+
+    const volumeConverter = computed(() => {
+        return state.controls.volume / 100
+    })
+
+    const play = () => {
+        context.refs.player.play()
+        state.controls.paused = false
+    }
+
+    const pause = () => {
+        context.refs.player.pause()
+        state.controls.paused = true
+        console.log("pausing")
+    }
+
+    return{
+        play: play,
+        pause: pause,
+        paused: state.controls.paused,
+        volume: state.controls.volume,
+        volumeConverter
+    }
+}
+
+function timing(context){
+
+    const state = setState({
+        timer: 0
+    })
+
+    const followingTime = () => {
+        state.timer = context.refs.player.currentTime
+    }
+
+    const seekTime = () => {
+
+        state.timer = context.refs.timer.value
+        context.refs.player.currentTime = state.timer
+    }
+
+    return{
+        timer: state.timer,
+        followingTime,
+        seekTime
+    }
+}
+
 export default {
     name: 'TrackPlayer',
 
@@ -20,89 +79,34 @@ export default {
         info: {type: Object, required: true}
     },
 
-    data(){
+    setup(props, context){
+
+        const state = setState({
+            song_preview: props.info.preview_url,
+        })
+
+        const imageURL = computed(() => {
+
+            let url = props.info.album.images[0].url
+            return `url(${url})`
+        })
+
+        //methods and pause state
+        const { play, pause, paused, volume, volumeConverter } = playerControls(context)
+        const { timer, followingTime, seekTime }  = timing(context)
+
         return{
-            timer: 0,
-            volume: 25,
-            paused: true,
+            song_preview: state.song_preview,
+            volume,
+            volumeConverter,
+            imageURL,
+            play,
+            pause,
+            paused,
+            timer,
+            followingTime,
+            seekTime
         }
-    },
-
-    computed:{
-
-        song_preview(){
-
-            let url = null
-            
-            if(this.info.preview_url){
-                url = this.info.preview_url
-            }
-
-            return url
-        },
-
-        image_url(){
-
-            let url = null
-
-            if(this.info.album){
-                url = `url(${this.info.album.images[0].url})`
-            }
-
-            return url
-        },
-
-        track_name(){
-
-            let name = null
-
-            if(this.info.name){
-                name = this.info.name
-            }
-
-            return name
-        },
-
-        volume_converter(){
-            //transform volume so it can be compatible with the audio tag
-            return this.volume/100
-        }
-    },
-
-    methods:{
-
-        play(){
-
-            if(this.paused === false){
-                return null
-            }
-            
-            this.$refs.player.play()
-            this.paused = false
-        },
-
-        pause(){
-
-            if(this.paused === true){
-                return null                
-            }
-
-            this.$refs.player.pause()
-            this.paused = true
-        },
-
-        logTime(){
-            this.timer = this.$refs.player.currentTime
-
-            if(this.timer > 29.91000){
-                this.timer = 0
-            }
-        },
-
-        logSeeked(){
-            this.timer = this.$refs.timer.value
-            this.$refs.player.currentTime = this.timer
-        },
     },
 }
 </script>
