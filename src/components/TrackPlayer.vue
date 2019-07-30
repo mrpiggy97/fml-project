@@ -1,74 +1,34 @@
 <template>
     <div class="player-component" :style="{backgroundImage: imageURL}">
-        <audio :src="song_preview" ref="player" @timeupdate="followingTime"
+        <audio :src="state.song_preview" ref="player" @timeupdate="followingTime"
         :volume="volumeConverter">
         </audio>
 
-        <i class="fa fa-play-circle-o player" @click="play" v-if="paused"></i>
+        <i class="fa fa-play-circle-o player" @click="play" v-if="state.paused"></i>
         <i class="fa fa-pause-circle-o player" @click="pause" v-else></i>
 
-        <input class="volume" type="range" v-model="volume" min="0" max="100"/>
+        <input class="volume" type="range" v-model="state.volume" min="0" max="100"/>
         <input class="timer" type="range" min="0" max="30"
-        :value="timer" ref="timer" @change="seekTime"/>
+        :value="state.timer" ref="timer" @change="seekTime"/>
     </div>
 </template>
 
 <script>
-import { state as setState, computed } from 'vue-function-api'
+import { state as setState, computed, watch } from 'vue-function-api'
 
-function playerControls(context){
+function getComputedProperties(state){
 
-    const state = ({
-        controls: {
-            volume: 30,
-            paused: true
-        }
+    const imageURL = computed(() => {
+        return `url(${state.images[0].url})`
     })
 
     const volumeConverter = computed(() => {
-        return state.controls.volume / 100
+        return state.volume / 100
     })
 
-    const play = () => {
-        context.refs.player.play()
-        state.controls.paused = false
-    }
-
-    const pause = () => {
-        context.refs.player.pause()
-        state.controls.paused = true
-        console.log("pausing")
-    }
-
     return{
-        play: play,
-        pause: pause,
-        paused: state.controls.paused,
-        volume: state.controls.volume,
+        imageURL,
         volumeConverter
-    }
-}
-
-function timing(context){
-
-    const state = setState({
-        timer: 0
-    })
-
-    const followingTime = () => {
-        state.timer = context.refs.player.currentTime
-    }
-
-    const seekTime = () => {
-
-        state.timer = context.refs.timer.value
-        context.refs.player.currentTime = state.timer
-    }
-
-    return{
-        timer: state.timer,
-        followingTime,
-        seekTime
     }
 }
 
@@ -83,27 +43,45 @@ export default {
 
         const state = setState({
             song_preview: props.info.preview_url,
+            volume: 30,
+            timer: 0,
+            images: props.info.album.images,
+            paused: true
         })
 
-        const imageURL = computed(() => {
+        //computed properties
+        const { imageURL, volumeConverter } = getComputedProperties(state)
 
-            let url = props.info.album.images[0].url
-            return `url(${url})`
+        //methods
+        const play = () => {
+            context.refs.player.play()
+            state.paused = false
+        }
+
+        const pause = () => {
+            context.refs.player.pause()
+            state.paused = true
+        }
+
+        const followingTime = () => {
+            state.timer = context.refs.player.currentTime
+        }
+
+        const seekTime = () => {
+            state.timer = context.refs.timer.value
+            context.refs.player.currentTime = state.timer
+        }
+
+        watch(() => state.volume, (newVal) => {
+            console.log(newVal)
         })
-
-        //methods and pause state
-        const { play, pause, paused, volume, volumeConverter } = playerControls(context)
-        const { timer, followingTime, seekTime }  = timing(context)
 
         return{
-            song_preview: state.song_preview,
-            volume,
-            volumeConverter,
+            state: state,
             imageURL,
+            volumeConverter,
             play,
             pause,
-            paused,
-            timer,
             followingTime,
             seekTime
         }
