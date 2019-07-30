@@ -52,6 +52,10 @@ export default {
         //computed properties
         const { imageURL, volumeConverter } = getComputedProperties(state)
 
+        watch(() => volumeConverter.value, (newVal) => {
+            context.refs.player.volume = newVal
+        })
+
         //methods
         const play = () => {
             context.refs.player.play()
@@ -71,10 +75,6 @@ export default {
             state.timer = context.refs.timer.value
             context.refs.player.currentTime = state.timer
         }
-
-        watch(() => state.volume, (newVal) => {
-            console.log(newVal)
-        })
 
         return{
             state: state,
