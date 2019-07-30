@@ -1,34 +1,67 @@
 <template>
     <div class="player-component" :style="{backgroundImage: imageURL}">
-        <audio :src="state.song_preview" ref="player" @timeupdate="followingTime"
-        :volume="volumeConverter">
+        <audio :src="song_preview" ref="player" @timeupdate="followingTime"
+        :volume="volume / 100">
         </audio>
 
-        <i class="fa fa-play-circle-o player" @click="play" v-if="state.paused"></i>
+        <i class="fa fa-play-circle-o player" @click="play" v-if="paused"></i>
         <i class="fa fa-pause-circle-o player" @click="pause" v-else></i>
 
-        <input class="volume" type="range" v-model="state.volume" min="0" max="100"/>
+        <input class="volume" type="range" min="0" max="100" ref="volume"
+        value="30" @change="changeVolume"/>
         <input class="timer" type="range" min="0" max="30"
-        :value="state.timer" ref="timer" @change="seekTime"/>
+        :value="timer" ref="timer" @change="seekTime"/>
     </div>
 </template>
 
 <script>
-import { state as setState, computed, watch } from 'vue-function-api'
+import { value, computed, watch } from 'vue-function-api'
 
-function getComputedProperties(state){
+function controls(context){
 
-    const imageURL = computed(() => {
-        return `url(${state.images[0].url})`
-    })
+    const paused = value(true)
+    const volume = value(30)
 
-    const volumeConverter = computed(() => {
-        return state.volume / 100
-    })
+    const play = () => {
+        context.refs.player.play()
+        paused.value = false
+    }
+
+    const pause = () => {
+        context.refs.player.pause()
+        paused.value = true
+    }
+
+    const changeVolume = () => {
+        context.refs.player.volume = context.refs.volume.value / 100
+    }
 
     return{
-        imageURL,
-        volumeConverter
+        paused,
+        volume,
+        changeVolume,
+        play,
+        pause,
+    }
+}
+
+function playerTime(context){
+
+    const timer = value(0)
+
+    const followingTime = () => {
+        timer.value = context.refs.player.currentTime
+    }
+
+    const seekTime = () => {
+        timer.value = context.refs.timer.value
+        context.refs.player.currentTime = timer.value
+    }
+
+    return{
+        timer,
+        followingTime,
+        seekTime
     }
 }
 
@@ -41,49 +74,25 @@ export default {
 
     setup(props, context){
 
-        const state = setState({
-            song_preview: props.info.preview_url,
-            volume: 30,
-            timer: 0,
-            images: props.info.album.images,
-            paused: true
+        const { paused, volume, changeVolume, play, pause } = controls(context)
+        const { timer, followingTime, seekTime } = playerTime(context)
+        const song_preview = value(props.info.preview_url)
+
+        const imageURL = computed(() => {
+            return `url(${props.info.album.images[0].url})`
         })
-
-        //computed properties
-        const { imageURL, volumeConverter } = getComputedProperties(state)
-
-        watch(() => volumeConverter.value, (newVal) => {
-            context.refs.player.volume = newVal
-        })
-
-        //methods
-        const play = () => {
-            context.refs.player.play()
-            state.paused = false
-        }
-
-        const pause = () => {
-            context.refs.player.pause()
-            state.paused = true
-        }
-
-        const followingTime = () => {
-            state.timer = context.refs.player.currentTime
-        }
-
-        const seekTime = () => {
-            state.timer = context.refs.timer.value
-            context.refs.player.currentTime = state.timer
-        }
 
         return{
-            state: state,
-            imageURL,
-            volumeConverter,
+            song_preview,
+            paused,
+            volume,
+            changeVolume,
             play,
             pause,
+            timer,
             followingTime,
-            seekTime
+            seekTime,
+            imageURL
         }
     },
 }
