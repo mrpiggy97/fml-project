@@ -1,14 +1,15 @@
 <template>
     <div class="player-component" :style="{backgroundImage: image_url}">
-        <audio :src="song_preview" ref="player" @timeupdate="logTime" :volume="volume_converter">
+        <audio :src="song_preview" ref="player" @timeupdate="logTime" volume="volumeConverter">
         </audio>
 
         <i class="fa fa-play-circle-o player" @click="play" v-if="paused"></i>
         <i class="fa fa-pause-circle-o player" @click="pause" v-else></i>
 
-        <input class="volume" type="range" v-model="volume" min="0" max="100"/>
+        <input class="volume" type="range" min="0" max="100"
+            :value="volume" ref="volume" @change="changeVolume"/>
         <input class="timer" type="range" min="0" max="30"
-        :value="timer" ref="timer" @change="logSeeked"/>
+            :value="timer" ref="timer" @change="logSeeked"/>
     </div>
 </template>
 
@@ -23,7 +24,8 @@ export default {
     data(){
         return{
             timer: 0,
-            volume: 25,
+            volume: 30,
+            volumeConverter: 30/100,
             paused: true,
         }
     },
@@ -62,11 +64,6 @@ export default {
 
             return name
         },
-
-        volume_converter(){
-            //transform volume so it can be compatible with the audio tag
-            return this.volume/100
-        }
     },
 
     methods:{
@@ -103,6 +100,12 @@ export default {
             this.timer = this.$refs.timer.value
             this.$refs.player.currentTime = this.timer
         },
+
+        changeVolume(){
+            this.volume = this.$refs.volume.value
+            this.volumeConverter = this.volume / 100
+            this.$refs.player.volume = this.volumeConverter
+        }
     },
 }
 </script>
