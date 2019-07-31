@@ -1,6 +1,6 @@
 <template>
     <div class="player-component" :style="{backgroundImage: imageURL}">
-        <audio :src="song_preview" ref="player" @timeupdate="followingTime"
+        <audio :src="songPreview" ref="player" @timeupdate="followingTime"
         :volume="volume / 100">
         </audio>
 
@@ -15,9 +15,10 @@
 </template>
 
 <script>
-import { value, computed, watch } from 'vue-function-api'
+import { value, computed } from 'vue-function-api'
 
 function controls(context){
+    //provide controls for the player
 
     const paused = value(true)
     const volume = value(30)
@@ -46,7 +47,8 @@ function controls(context){
 }
 
 function playerTime(context){
-
+    //control the layout related to the timer
+    //of the track
     const timer = value(0)
 
     const followingTime = () => {
@@ -65,6 +67,24 @@ function playerTime(context){
     }
 }
 
+function audioPlayerInfo(props){
+    //provide the image for the background
+    //and the source of the track
+    const songPreview = computed(() => {
+        return props.info.preview_url
+    })
+
+    const imageURL = computed(() => {
+        let url = props.info.album.images[0].url
+        return `url(${url})`
+    })
+
+    return{
+        songPreview,
+        imageURL
+    }
+}
+
 export default {
     name: 'TrackPlayer',
 
@@ -76,16 +96,9 @@ export default {
 
         const { paused, volume, changeVolume, play, pause } = controls(context)
         const { timer, followingTime, seekTime } = playerTime(context)
-    
-        const song_preview = computed(() => {
-            return props.info.preview_url
-        })
-        const imageURL = computed(() => {
-            return `url(${props.info.album.images[0].url})`
-        })
+        const { songPreview, imageURL } = audioPlayerInfo(props)
 
         return{
-            song_preview,
             paused,
             volume,
             changeVolume,
@@ -94,6 +107,7 @@ export default {
             timer,
             followingTime,
             seekTime,
+            songPreview,
             imageURL
         }
     },
