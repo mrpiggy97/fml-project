@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { value, onCreated, onMounted, watch, computed } from 'vue-function-api'
+import { value, computed, onCreated, onMounted, watch } from 'vue-function-api'
 import { setTimeout } from 'timers'
 import searchTracks from '@/api_services/searchTracks.js'
 
@@ -37,6 +37,8 @@ import SearchForm from '@/components/SearchForm.vue'
 
 
 function APICall(){
+    //make the api call and provide the layout
+    //for the app when loading tracks
 
     const tracks = value({
         items: [],
@@ -98,7 +100,6 @@ function APICall(){
         }
 
         catch(error){
-            console.log(error)
             backendError.value = true
         }
 
@@ -116,11 +117,12 @@ function APICall(){
 }
 
 function mobileLayout(){
-
+    //check if app should dispay a mobile layout
+    
     const isMobile = value(window.screen.width <= 769)
 
-    const onResize = () => {
-        isMobile.value = window.screen.width <= 769
+    const onResize = (width) => {
+        isMobile.value = width <= 769
     }
 
     return{
@@ -130,6 +132,7 @@ function mobileLayout(){
 }
 
 function getStore(context){
+    //get query and getTrack from store
     
     const query = computed(() => {
         return context.root.$store.state.query
@@ -158,15 +161,11 @@ export default {
 
         //state and computed
         const { tracks, showMessage, message, getTracks } = APICall()
-        const { isMobile, onResize } = mobileLayout()
+        let { isMobile, onResize } = mobileLayout()
         const { query, getTrack } = getStore(context)
 
         watch(() => query.value, (newVal) => {
             getTracks(newVal)
-        })
-
-        onMounted(() => {
-            onResize()
         })
 
         onCreated(() => {
@@ -177,6 +176,11 @@ export default {
                     getTrack(id)
                 }
             })
+        })
+
+        onMounted(() => {
+            let width = window.screen.width
+            window.addEventListener('resize', onResize(width))
         })
 
         return{
