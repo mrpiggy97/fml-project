@@ -79,14 +79,14 @@ export default {
             this.$router.history.push({name: "about"})
         },
 
-        onReszie(){
+        onResize(){
             //check if app should show mobile layout
             this.isMobile = window.screen.width <= 769
         }
     },
 
     mounted(){
-        window.addEventListener('resize', this.onReszie)
+        window.addEventListener('resize', this.onResize)
     }
 }
 </script>
