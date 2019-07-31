@@ -76,8 +76,10 @@ export default {
 
         const { paused, volume, changeVolume, play, pause } = controls(context)
         const { timer, followingTime, seekTime } = playerTime(context)
-        const song_preview = value(props.info.preview_url)
-
+    
+        const song_preview = computed(() => {
+            return props.info.preview_url
+        })
         const imageURL = computed(() => {
             return `url(${props.info.album.images[0].url})`
         })
