@@ -13,7 +13,7 @@ body{
                          "footer";
     justify-content: stretch;
     align-content: stretch;
-    grid-gap: 100px;
+    grid-gap: 115px;
     min-height: 2200px;
     max-height: 2200px;
   }
