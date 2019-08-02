@@ -41,52 +41,61 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { value, computed, onMounted } from 'vue-function-api'
 import TrackPlayer from '@/components/TrackPlayer.vue'
 import SearchForm from '@/components/SearchForm.vue'
 
 export default {
     name: 'MainHeader',
-    data(){
-        return{
-            showMenu: false,
-            isMobile: window.screen.width <= 769,
-            query: '',
-        }
-    },
 
     components:{
-        TrackPlayer,
-        SearchForm,
+    TrackPlayer,
+    SearchForm,
     },
 
-    computed:{
-        ...mapState(['track'])
-    },
+    setup(props, context){
 
-    methods:{
+        const showMenu = value(false)
+        const isMobile = value(window.screen.width <= 769)
+        const query = value('')
+
+        const track = computed(() => {
+            return context.root.$store.state.track
+        })
+
         //show or close navbar if user is on mobile
-        slideMenu(){
-            //if else block can be replaced by this
-            this.showMenu = (this.showMenu === true) ? false : true
-        },
-        //redirect methods
-        redirectHome(){
-            this.$router.history.push({name: "tracks"})
-        },
-
-        redirectAbout(){
-            this.$router.history.push({name: "about"})
-        },
-
-        onResize(){
-            //check if app should show mobile layout
-            this.isMobile = window.screen.width <= 769
+        const slideMenu = () => {
+            //if-else block can be replaced with this
+            showMenu.value = (showMenu === true) ? false : true
         }
-    },
+        //redirect methods
+        const redirectHome = () => {
+            context.root.$router.history.push({name: "tracks"})
+        }
 
-    mounted(){
-        window.addEventListener('resize', this.onResize)
+        const redirectAbout = () => {
+            context.root.$router.history.push({name: "about"})
+        }
+
+        const onResize = (width) => {
+            //check if app should show mobile layout
+            isMobile.value = width <= 769
+        }
+
+        onMounted(() => {
+            let width = window.screen.width
+            window.addEventListener('resize', onResize(width))
+        })
+
+        return {
+            showMenu,
+            isMobile,
+            query,
+            track,
+            slideMenu,
+            redirectHome,
+            redirectAbout,
+        }
     }
 }
 </script>

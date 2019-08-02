@@ -1,5 +1,5 @@
 <template>
-    <div class="trackinfo-component" :class="[has_preview_url ? 'has-track' : 'no-track',
+    <div class="trackinfo-component" :class="[hasPreviewURL ? 'has-track' : 'no-track',
     selected ? 'selected' : 'unselected']" @click="selectTrack">
         <transition name="slide">
             <div class="track-image" :style="{backgroundImage: image_url}" v-show="appear">
@@ -22,7 +22,83 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { computed } from 'vue-function-api'
+
+function layout(props){
+
+    const track_name = computed(() => {
+        return props.info.name
+    })
+
+    const image_url = computed(() => {
+        let url = props.info.album.images[0].url
+        return `url(${url})`
+    })
+
+    const artists = computed(() => {
+        let musicians = []
+
+        if(props.info.artists.length < 2){
+            musicians.push(props.info.artists[0])
+        }
+        else{
+            for(let i=0; i < 2; i++){
+                musicians.push(props.info.artists[i])
+            }
+        }
+
+        return musicians
+    })
+
+    const hasPreviewURL = computed(() => {
+        return props.info.preview_url !== null
+    })
+
+    return {
+        track_name,
+        image_url,
+        artists,
+        hasPreviewURL
+    }
+}
+
+function getStore(props, context){
+
+    const trackId = computed(() => {
+
+        let value = null
+        let track = context.root.$store.state.track
+        let trackIsObject = track instanceof Object
+
+        if(trackIsObject === true){
+            value = track.id
+        }
+
+        return value
+    })
+
+    const selected = computed(() => {
+
+        let value = false
+
+        if(trackId !== null){
+            if(trackId === props.info.id){
+                value = true
+            }
+        }
+
+        return value
+    })
+
+    const selectTrack = () => {
+        context.root.$store.dispatch('geteTrack', props.info.id)
+    }
+
+    return{
+        selected,
+        selectTrack
+    }
+}
 
 export default {
     name: 'TrackInfo',
@@ -32,80 +108,19 @@ export default {
         appear: {type: Boolean, required: true}
     },
 
-    computed: {
-        ...mapState(['track']),
+    setup(props, context){
 
-        selected(){
+        const { track_name, image_url, artists, hasPreviewURL } = layout(props)
+        const { selected, selectTrack } = getStore(props, context)
 
-            let value = false
-
-            let trackType = this.track instanceof Object
-            
-            if(trackType === true && this.track.id == this.id){
-                value = true
-            }                
-            //if track was selected it should be an Object
-
-            return value
-        },
-
-        image_url(){
-            let value = null
-
-            if(this.info.album){
-                if(this.info.album.images[0]){
-                    value = `url(${this.info.album.images[0].url})`                    
-                }
-            }
-
-            return value
-        },
-
-        artists(){
-
-            let musicians = []
-            
-            let artists = this.info.album.artists
-
-            if(artists.length <= 2){
-                artists.map((artist) => musicians.push(artist))       
-            }
-
-            else{
-                for(let i=0; i < artists.length; i++){
-                    musicians.push(artists[i])
-                }
-            }
-
-            return musicians
-        },
-
-        id(){
-            return this.info.id
-        },
-
-        track_name(){
-            return this.info.name
-        },
-
-        has_preview_url(){
-            return this.info.preview_url !== null
-        },
-    },
-
-    methods: {
-        ...mapActions(['getTrack']),
-
-        selectTrack(){
-
-            if(this.has_preview_url === true){
-                this.getTrack(this.id)
-            }
-
-            else if(this.has_preview_url === false){
-                return null
-            }
-        },
+        return{
+            track_name,
+            image_url,
+            artists,
+            hasPreviewURL,
+            selected,
+            selectTrack
+        }
     }
 }
 </script>

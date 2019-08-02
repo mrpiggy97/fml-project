@@ -3,7 +3,7 @@
     <!--it will ocupy the area at which it is being rendered-->
     <!--on mobile but only the entire length in 3/4 of the width area on desktop-->
     <div class="searchform-component">
-        <form class="search-form" @submit="sendQuery">
+        <form class="search-form" @submit="setQuery">
             <input type="text" class="search-input" v-model="query"/>
             <button type="submit" class="search-button">
                 <i class="fa fa-search"></i>
@@ -13,28 +13,27 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { value } from 'vue-function-api'
 
 export default {
     name: "SearchForm",
 
-    data(){
-        return{
-            //query will work with an event bus to pass data from MainHeader
-            //component and Tracks view to Tracks view itself to make a call api
-            query: '',
-        }
-    },
+    setup(props, context){
 
-    methods:{
-        ...mapMutations(['setQuery']),
+        const query = value('')
 
-        sendQuery(e){
+        const setQuery = (e) => {
             e.preventDefault()
-            this.setQuery(this.query)
-            if(this.$route.name == 'about'){
-                this.$router.history.push({name: 'tracks'})
+            context.root.$store.commit('setQuery', query.value)
+
+            if(context.root.$route.name === 'about'){
+                context.root.$router.history.push({name: 'tracks'})
             }
+        }
+
+        return{
+            query,
+            setQuery
         }
     }
 }
